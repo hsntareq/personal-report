@@ -1,0 +1,123 @@
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.tabButton {
+  padding: 8px 20px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background: none;
+  font-weight: normal;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  transition: border-bottom 0.2s, color 0.2s;
+}
+.tabButtonActive {
+  border-bottom: 3px solid #007bff;
+  color: #007bff;
+  font-weight: bold;
+}
+.tabContent {
+  min-height: 350px;
+}
+.card {
+  max-width: 700px;
+  margin: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 32px;
+  min-height: 300px;
+}
+.targetCard {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0001;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.addPersonForm {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px #0001;
+}
+.inputRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.input,
+.select {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.booksInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.bookItem {
+  background: #e9ecef;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-right: 6px;
+  font-size: 13px;
+}
+.saveButton {
+  padding: 10px 24px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 8px;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+.saveButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.targetList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.targetGroupTitle {
+  color: #007bff;
+  margin-bottom: 12px;
+}
+.targetPerson {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.targetPersonName {
+  font-weight: 600;
+  font-size: 16px;
+}
+.targetPersonDetails {
+  color: #555;
+  font-size: 14px;
+}
+.targetPersonDate {
+  color: #007bff;
+}
+.targetPersonBooks {
+  font-size: 13px;
+  color: #888;
+}
