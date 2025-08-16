@@ -39,6 +39,8 @@ const TABS = ['Report', 'Target', 'Books', 'Activity'] as const;
 type TabType = typeof TABS[number];
 
 const ProfileTargets: React.FC = () => {
+	// Accordion expand/collapse state for each person (keyed by group+index)
+	const [expandedPersons, setExpandedPersons] = useState<{ [key: string]: boolean }>({});
 	const [activeTab, setActiveTab] = useState<TabType>('Target');
 	const [groups, setGroups] = useState<TargetGroup[]>(initialGroups);
 	const [newPerson, setNewPerson] = useState<TargetPerson>({ name: '', address: '', phone: '', books: [], targetDate: '' });
@@ -220,95 +222,143 @@ const ProfileTargets: React.FC = () => {
 				<div className={styles.tabContent}>
 					{activeTab === 'Target' && (
 						<div className={styles.card}>
-							<h2 className={styles.targetGroupTitle}>Target Groups</h2>
+							<div className={styles.targetGroupHeader}>
+								<h2 className={styles.targetGroupTitle}>Target Groups</h2>
+								<button className={styles.saveButton} type="button" onClick={openAddModal}>+ Add Person</button>
+							</div>
 							{loading ? <div style={{ textAlign: 'center', padding: 32 }}>Loading...</div> : <>
-								<div style={{ marginBottom: 24, display: 'flex', gap: 16, alignItems: 'center' }}>
-									<label style={{ fontWeight: 500 }}>
-										Select Group:
-										<select value={selectedGroup} onChange={e => setSelectedGroup(e.target.value as GroupType)} className={styles.select} style={{ marginLeft: 8 }}>
-											<option value="Member">Member</option>
-											<option value="Activist">Activist</option>
-											<option value="Supporter">Supporter</option>
-										</select>
-									</label>
-								</div>
-								<button type="button" onClick={openAddModal} className={styles.saveButton} style={{ marginBottom: 24, background: '#007bff' }}>+ Add Person</button>
+								{/* Select Group field moved into modal below */}
 								{showModal && (
 									<div className={modalStyles.modalOverlay}>
 										<div className={modalStyles.modalContent}>
 											<button className={modalStyles.closeBtn} onClick={() => setShowModal(false)}>&times;</button>
 											<h3 style={{ marginBottom: 18 }}>{editPersonId ? 'Edit Person' : 'Add Person'}</h3>
-											<div className={styles.inputRow}>
-												<input type="text" placeholder="Name" value={newPerson.name} onChange={e => setNewPerson({ ...newPerson, name: e.target.value })} className={styles.input} />
-												<input type="text" placeholder="Address" value={newPerson.address} onChange={e => setNewPerson({ ...newPerson, address: e.target.value })} className={styles.input} />
-											</div>
-											<div className={styles.inputRow}>
-												<input type="text" placeholder="Phone" value={newPerson.phone} onChange={e => setNewPerson({ ...newPerson, phone: e.target.value })} className={styles.input} />
-												<input type="date" placeholder="Target Date" value={newPerson.targetDate} onChange={e => setNewPerson({ ...newPerson, targetDate: e.target.value })} className={styles.input} />
-											</div>
-											<div className={styles.booksInput}>
-												<input type="text" placeholder="Add Book" value={bookInput} onChange={e => setBookInput(e.target.value)} className={styles.input} />
-												<button type="button" onClick={handleAddBook} style={{ padding: '8px 16px', background: '#007bff', color: '#fff', border: 'none', borderRadius: 4, fontWeight: 500, cursor: 'pointer' }}>+ More</button>
-											</div>
-											<div className={styles.booksList}>
-												{newPerson.books.map((book, idx) => (
-													<span key={idx} className={styles.bookItem} style={{ display: 'inline-flex', alignItems: 'center', marginRight: 6 }}>
-														{book}
-														<button
-															type="button"
-															aria-label="Remove book"
-															style={{
-																marginLeft: 4,
-																background: 'none',
-																border: 'none',
-																color: '#d00',
-																fontWeight: 'bold',
-																fontSize: 16,
-																cursor: 'pointer',
-																lineHeight: 1,
-															}}
-															onClick={() => {
-																setNewPerson(p => ({
-																	...p,
-																	books: p.books.filter((_, bidx) => bidx !== idx)
-																}));
-															}}
-														>
-															&times;
-														</button>
-													</span>
-												))}
-											</div>
-											<button type="button" onClick={handleAddPerson} disabled={saving} className={styles.saveButton} style={{ marginTop: 12 }}>{saving ? 'Saving...' : (editPersonId ? 'Save Changes' : 'Add Person')}</button>
+											<form
+												onSubmit={e => {
+													e.preventDefault();
+													handleAddPerson();
+												}}
+											>
+												<div style={{ marginBottom: 18, display: 'flex', gap: 16, alignItems: 'center' }}>
+													<label style={{ fontWeight: 500 }}>
+														Select Group:
+														<select value={selectedGroup} onChange={e => setSelectedGroup(e.target.value as GroupType)} className={styles.select} style={{ marginLeft: 8 }}>
+															<option value="Member">Member</option>
+															<option value="Activist">Activist</option>
+															<option value="Supporter">Supporter</option>
+														</select>
+													</label>
+												</div>
+												<div className={styles.inputRow}>
+													<input type="text" placeholder="Name" value={newPerson.name} onChange={e => setNewPerson({ ...newPerson, name: e.target.value })} className={styles.input} />
+													<input type="text" placeholder="Address" value={newPerson.address} onChange={e => setNewPerson({ ...newPerson, address: e.target.value })} className={styles.input} />
+												</div>
+												<div className={styles.inputRow}>
+													<input type="text" placeholder="Phone" value={newPerson.phone} onChange={e => setNewPerson({ ...newPerson, phone: e.target.value })} className={styles.input} />
+													<input type="date" placeholder="Target Date" value={newPerson.targetDate} onChange={e => setNewPerson({ ...newPerson, targetDate: e.target.value })} className={styles.input} />
+												</div>
+												<div className={styles.booksInput}>
+													<input type="text" placeholder="Add Book" value={bookInput} onChange={e => setBookInput(e.target.value)} className={styles.input} />
+													<button type="button" onClick={handleAddBook} style={{ padding: '8px 16px', background: '#007bff', color: '#fff', border: 'none', borderRadius: 4, fontWeight: 500, cursor: 'pointer' }}>+ More</button>
+												</div>
+												<div className={styles.booksList}>
+													{newPerson.books.map((book, idx) => (
+														<span key={idx} className={styles.bookItem} style={{ display: 'inline-flex', alignItems: 'center', marginRight: 6 }}>
+															{book}
+															<button
+																type="button"
+																aria-label="Remove book"
+																style={{
+																	marginLeft: 4,
+																	background: 'none',
+																	border: 'none',
+																	color: '#d00',
+																	fontWeight: 'bold',
+																	fontSize: 16,
+																	cursor: 'pointer',
+																	lineHeight: 1,
+																}}
+																onClick={() => {
+																	setNewPerson(p => ({
+																		...p,
+																		books: p.books.filter((_, bidx) => bidx !== idx)
+																	}));
+																}}
+															>
+																&times;
+															</button>
+														</span>
+													))}
+												</div>
+												<button type="submit" disabled={saving} className={styles.saveButton} style={{ marginTop: 12 }}>{saving ? 'Saving...' : (editPersonId ? 'Save Changes' : 'Add Person')}</button>
+											</form>
 										</div>
 									</div>
 								)}
 								<div className={styles.targetList}>
-									{groups.map(group => (
+									{groups.map((group) => (
 										<div key={group.type} className={styles.targetCard}>
 											<h3 className={styles.targetGroupTitle}>{group.type} Target</h3>
 											<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-												{group.persons.map((person, idx) => (
-													<li key={idx} className={styles.targetPerson} style={{ display: 'flex', alignItems: 'left', gap: 16, borderBottom: '1px solid #eee', padding: '10px 0', textAlign: 'left' }}>
-														<span className={styles.targetPersonName} style={{ minWidth: 120, textAlign: 'left' }}>{person.name}</span>
-														<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>Address:</strong> {person.address}</span>
-														<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>Phone:</strong> {person.phone}</span>
-														<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}><strong>Date:</strong> {person.targetDate}</span>
-														<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
-															<strong>Books:</strong>
-															{person.books.length > 0 ? (
-																<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
-																	{person.books.map((book, bidx) => (
-																		<li key={bidx}>{book}</li>
-																	))}
-																</ol>
-															) : (
-																<span style={{ color: '#aaa' }}>None</span>
+												{group.persons.map((person, idx) => {
+													const personKey = `${group.type}-${person.id ?? idx}`;
+													const expanded = !!expandedPersons[personKey];
+													const togglePerson = () => setExpandedPersons(prev => ({ ...prev, [personKey]: !prev[personKey] }));
+													return (
+														<li key={idx} className={styles.targetPerson} style={{ borderBottom: '1px solid #eee', padding: '10px 0', textAlign: 'left' }}>
+															<div
+																className={styles.targetPersonName}
+																style={{ minWidth: 120, textAlign: 'left', display: 'flex', alignItems: 'center', position: 'relative', justifyContent: 'space-between', cursor: 'pointer', fontWeight: 500 }}
+																onClick={togglePerson}
+															>
+																<span style={{ display: 'flex', alignItems: 'center' }}>
+
+																	<span>{person.name}</span>
+																	<button
+																		type="button"
+																		aria-label="Edit"
+																		onClick={e => { e.stopPropagation(); handleEditPerson(group.type, idx); }}
+																		style={{
+																			marginLeft: 8,
+																			background: 'none',
+																			border: 'none',
+																			cursor: 'pointer',
+																			padding: 0,
+																			display: 'flex',
+																			alignItems: 'center',
+																		}}
+																	>
+																		<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+																			<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2Zm2.12-2.12a3.2 3.2 0 0 0-4.53 0l-9.2 9.2a1 1 0 0 0-.26.48l-.8 4.2a1 1 0 0 0 1.18 1.18l4.2-.8a1 1 0 0 0 .48-.26l9.2-9.2a3.2 3.2 0 0 0 0-4.53Z" fill="#ffc107" />
+																		</svg>
+																	</button>
+																</span>
+																<span style={{ fontSize: 16, marginLeft: 8 }}>{expanded ? '▼' : '▶'}</span>
+															</div>
+															{expanded && (
+																<div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 8, flexDirection: 'column' }}>
+																	<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>Address:</strong> {person.address}</span>
+																	<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>Phone:</strong> {person.phone}</span>
+																	<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
+																		<strong>Date:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+																	</span>
+																	<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
+																		<strong>Books:</strong>
+																		{person.books.length > 0 ? (
+																			<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
+																				{person.books.map((book, bidx) => (
+																					<li key={bidx}>{book}</li>
+																				))}
+																			</ol>
+																		) : (
+																			<span style={{ color: '#aaa' }}>None</span>
+																		)}
+																	</div>
+																</div>
 															)}
-														</div>
-														<button type="button" style={{ marginLeft: 12, padding: '4px 12px', background: '#ffc107', color: '#333', border: 'none', borderRadius: 4, fontWeight: 500, cursor: 'pointer', height: 32 }} onClick={() => handleEditPerson(group.type, idx)}>Edit</button>
-													</li>
-												))}
+														</li>
+													);
+												})}
 											</ul>
 										</div>
 									))}
