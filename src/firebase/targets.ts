@@ -1,5 +1,19 @@
-import { addDoc, collection, getDocs, query, Timestamp, where } from 'firebase/firestore';
+import { addDoc, collection, deleteDoc, doc, getDocs, query, Timestamp, updateDoc, where } from 'firebase/firestore';
 import { db } from './config';
+// Update a target person by document ID
+export const updateTargetPerson = async (
+  id: string,
+  data: Partial<TargetPerson> & { groupType: 'Member' | 'Activist' | 'Supporter' }
+) => {
+  const ref = doc(db, 'targets', id);
+  await updateDoc(ref, data);
+};
+
+// Delete a target person by document ID
+export const deleteTargetPerson = async (id: string) => {
+  const ref = doc(db, 'targets', id);
+  await deleteDoc(ref);
+};
 
 export interface TargetPerson {
   name: string;

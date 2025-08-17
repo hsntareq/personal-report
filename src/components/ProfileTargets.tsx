@@ -10,7 +10,7 @@ type FirestoreTargetPerson = {
 };
 import React, { useEffect, useState } from 'react';
 import type { TargetPerson as DBTargetPerson } from '../firebase/targets';
-import { addTargetPerson, getTargetPersons } from '../firebase/targets';
+import { addTargetPerson, deleteTargetPerson, getTargetPersons, updateTargetPerson } from '../firebase/targets';
 import { useAuth } from '../hooks/useAuth';
 import modalStyles from './Modal.module.css';
 import styles from './ProfileTargets.module.css';
@@ -125,30 +125,22 @@ const ProfileTargets: React.FC = () => {
 		};
 		try {
 			if (editPersonId) {
-				// Editing: update the person in Firestore by deleting old and adding new
-				// 1. Fetch all persons
+				// Editing: update the person in Firestore by document ID
+				// If groupType changed, delete old and add new in new group
 				const data = await getTargetPersons(currentUser.uid);
-				// 2. Find the person by id and remove
-				const filtered = (data as FirestoreTargetPerson[]).filter((item) => item.id !== editPersonId);
-				// 3. Add the updated person
-				filtered.push({
-					name: personToSave.name,
-					address: personToSave.address,
-					phone: personToSave.phone,
-					books: personToSave.books,
-					targetDate: personToSave.targetDate,
-					groupType: selectedGroup
-				});
-				// 4. Remove all and re-add (simulate update)
-				// (In real app, use doc IDs for precise update. Here, we re-add all for simplicity)
-				for (const item of filtered) {
-					await addTargetPerson(currentUser.uid, item.groupType, {
-						name: item.name,
-						address: item.address,
-						phone: item.phone,
-						books: item.books,
-						targetDate: item.targetDate,
-					});
+				const oldPerson = (data as FirestoreTargetPerson[]).find((item) => item.id === editPersonId);
+				if (oldPerson) {
+					if (oldPerson.groupType !== selectedGroup) {
+						// Group changed: delete old, add new
+						await deleteTargetPerson(editPersonId);
+						await addTargetPerson(currentUser.uid, selectedGroup, personToSave as DBTargetPerson);
+					} else {
+						// Group same: update in place
+						await updateTargetPerson(editPersonId, {
+							...personToSave,
+							groupType: selectedGroup,
+						});
+					}
 				}
 			} else {
 				// Adding new
@@ -340,7 +332,7 @@ const ProfileTargets: React.FC = () => {
 																	<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>Address:</strong> {person.address}</span>
 																	<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>Phone:</strong> {person.phone}</span>
 																	<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
-																		<strong>Date:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+																		<strong>Date of target:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
 																	</span>
 																	<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
 																		<strong>Books:</strong>
