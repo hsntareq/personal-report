@@ -37,8 +37,8 @@ A React application with Firebase Authentication and Firestore database integrat
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/smsnaher/react-login-register-firebase.git
-cd react-login-register-firebase
+git clone https://github.com/smsnaher/personal-report.git
+cd personal-report
 ```
 
 ### 2. Install Dependencies
@@ -151,7 +151,7 @@ To deploy:
 
 1. Push your changes to the `main` branch
 2. GitHub Actions will automatically build and deploy to GitHub Pages
-3. Your app will be available at: `https://smsnaher.github.io/react-login-register-firebase/`
+3. Your app will be available at: `https://smsnaher.github.io/personal-report/`
 
 ## Security Rules (Firestore)
 
