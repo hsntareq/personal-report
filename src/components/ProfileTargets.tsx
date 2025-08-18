@@ -221,6 +221,15 @@ const ProfileTargets: React.FC = () => {
 				{ type: 'activist', persons: grouped.activist },
 				{ type: 'supporter', persons: grouped.supporter },
 			]);
+			// Remove any expandedPersons keys that no longer exist
+			setExpandedPersons(prev => {
+				const validKeys = new Set([
+					...grouped.member.map(p => `member-${p.id}`),
+					...grouped.activist.map(p => `activist-${p.id}`),
+					...grouped.supporter.map(p => `supporter-${p.id}`),
+				]);
+				return Object.fromEntries(Object.entries(prev).filter(([k]) => validKeys.has(k)));
+			});
 			setNewPerson({ name: '', address: '', phone: '', books: [], targetDate: '' });
 			setBookInput('');
 			setEditPersonId(null);
