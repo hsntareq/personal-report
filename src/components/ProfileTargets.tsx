@@ -1,20 +1,4 @@
-// Firestore document type for a person
-type FirestoreTargetPerson = {
-	id?: string;
-	groupType: 'Member' | 'Activist' | 'Supporter';
-	name: string;
-	address: string;
-	phone: string;
-	books: string[];
-	targetDate: string;
-};
-import React, { useEffect, useState } from 'react';
-import type { TargetPerson as DBTargetPerson } from '../firebase/targets';
-import { addTargetPerson, deleteTargetPerson, getTargetPersons, updateTargetPerson } from '../firebase/targets';
-import { useAuth } from '../hooks/useAuth';
-import modalStyles from './Modal.module.css';
-import styles from './ProfileTargets.module.css';
-
+// Local type for a person in UI
 interface TargetPerson {
 	id?: string; // Firestore doc id
 	name: string;
@@ -25,27 +9,84 @@ interface TargetPerson {
 }
 
 interface TargetGroup {
-	type: 'Member' | 'Activist' | 'Supporter';
+	type: 'member' | 'activist' | 'supporter';
 	persons: TargetPerson[];
 }
 
 const initialGroups: TargetGroup[] = [
-	{ type: 'Member', persons: [] },
-	{ type: 'Activist', persons: [] },
-	{ type: 'Supporter', persons: [] },
+	{ type: 'member', persons: [] },
+	{ type: 'activist', persons: [] },
+	{ type: 'supporter', persons: [] },
 ];
 
 const TABS = ['Report', 'Target', 'Books', 'Activity'] as const;
 type TabType = typeof TABS[number];
+import React, { useEffect, useState } from 'react';
+import { addTargetPerson, deleteTargetPerson, getTargetPersons, updateTargetPerson } from '../firebase/targets';
+import { useAuth } from '../hooks/useAuth';
+import modalStyles from './Modal.module.css';
+import styles from './ProfileTargets.module.css';
+// Firestore document type for a person
+type FirestoreTargetPerson = {
+	id?: string;
+	groupType: 'member' | 'activist' | 'supporter';
+	name: string;
+	address: string;
+	phone: string;
+	books: string[];
+	targetDate: string;
+};
 
 const ProfileTargets: React.FC = () => {
+	// ...existing state and variable declarations...
+
+	// Delete handler for a person by id
+	const handleTargetDelete = async (personId: string | undefined) => {
+		if (!personId) {
+			alert('Invalid person ID');
+			console.error('Attempted to delete with invalid personId:', personId);
+			return;
+		}
+		if (!window.confirm('Are you sure you want to delete this person?')) return;
+		setSaving(true);
+		try {
+			await deleteTargetPerson(personId);
+			if (!currentUser) return;
+			const data = await getTargetPersons(currentUser.uid);
+			const grouped: Record<GroupType, TargetPerson[]> = { member: [], activist: [], supporter: [] };
+			function isGroupType(val: unknown): val is GroupType { return val === 'member' || val === 'activist' || val === 'supporter'; }
+			(data as FirestoreTargetPerson[]).forEach((item) => {
+				const groupType = item.groupType;
+				if (isGroupType(groupType)) {
+					grouped[groupType].push({
+						id: item.id,
+						name: item.name,
+						address: item.address,
+						phone: item.phone,
+						books: item.books || [],
+						targetDate: item.targetDate || '',
+					});
+				}
+			});
+			setGroups([
+				{ type: 'member', persons: grouped.member },
+				{ type: 'activist', persons: grouped.activist },
+				{ type: 'supporter', persons: grouped.supporter },
+			]);
+		} catch (err) {
+			console.error('Failed to delete target:', err);
+			alert('Failed to delete target.');
+		} finally {
+			setSaving(false);
+		}
+	};
 	// Accordion expand/collapse state for each person (keyed by group+index)
 	const [expandedPersons, setExpandedPersons] = useState<{ [key: string]: boolean }>({});
 	const [activeTab, setActiveTab] = useState<TabType>('Target');
 	const [groups, setGroups] = useState<TargetGroup[]>(initialGroups);
 	const [newPerson, setNewPerson] = useState<TargetPerson>({ name: '', address: '', phone: '', books: [], targetDate: '' });
-	type GroupType = 'Member' | 'Activist' | 'Supporter';
-	const [selectedGroup, setSelectedGroup] = useState<GroupType>('Member');
+	type GroupType = 'member' | 'activist' | 'supporter';
+	const [selectedGroup, setSelectedGroup] = useState<GroupType>('member');
 	const [bookInput, setBookInput] = useState('');
 	const { currentUser } = useAuth();
 	const [saving, setSaving] = useState(false);
@@ -66,12 +107,12 @@ const ProfileTargets: React.FC = () => {
 				const data = await getTargetPersons(currentUser.uid);
 				// Group by type
 				const grouped: Record<GroupType, TargetPerson[]> = {
-					Member: [],
-					Activist: [],
-					Supporter: [],
+					member: [],
+					activist: [],
+					supporter: [],
 				};
 				function isGroupType(val: unknown): val is GroupType {
-					return val === 'Member' || val === 'Activist' || val === 'Supporter';
+					return val === 'member' || val === 'activist' || val === 'supporter';
 				}
 				(data as FirestoreTargetPerson[]).forEach((item) => {
 					const groupType = item.groupType;
@@ -87,9 +128,9 @@ const ProfileTargets: React.FC = () => {
 					}
 				});
 				setGroups([
-					{ type: 'Member', persons: grouped.Member },
-					{ type: 'Activist', persons: grouped.Activist },
-					{ type: 'Supporter', persons: grouped.Supporter },
+					{ type: 'member', persons: grouped.member },
+					{ type: 'activist', persons: grouped.activist },
+					{ type: 'supporter', persons: grouped.supporter },
 				]);
 			} catch {
 				setGroups(initialGroups);
@@ -129,32 +170,38 @@ const ProfileTargets: React.FC = () => {
 				// If groupType changed, delete old and add new in new group
 				const data = await getTargetPersons(currentUser.uid);
 				const oldPerson = (data as FirestoreTargetPerson[]).find((item) => item.id === editPersonId);
+				console.log('[Edit] editPersonId:', editPersonId, 'oldPerson:', oldPerson, 'selectedGroup:', selectedGroup, 'personToSave:', personToSave);
 				if (oldPerson) {
 					if (oldPerson.groupType !== selectedGroup) {
 						// Group changed: delete old, add new
+						console.log('[Edit] Group changed. Deleting', editPersonId, 'and adding new:', personToSave);
 						await deleteTargetPerson(editPersonId);
-						await addTargetPerson(currentUser.uid, selectedGroup, personToSave as DBTargetPerson);
+						await addTargetPerson(currentUser.uid, selectedGroup, personToSave as TargetPerson);
 					} else {
 						// Group same: update in place
+						console.log('[Edit] Group same. Updating', editPersonId, 'with:', { ...personToSave, groupType: selectedGroup });
 						await updateTargetPerson(editPersonId, {
 							...personToSave,
 							groupType: selectedGroup,
 						});
 					}
+				} else {
+					console.error('[Edit] No oldPerson found for id:', editPersonId);
 				}
 			} else {
 				// Adding new
-				await addTargetPerson(currentUser.uid, selectedGroup, personToSave as DBTargetPerson);
+				console.log('[Add] Adding new person:', personToSave, 'to group:', selectedGroup);
+				await addTargetPerson(currentUser.uid, selectedGroup, personToSave as TargetPerson);
 			}
 			// Reload from DB after add/edit
 			const data = await getTargetPersons(currentUser.uid);
 			const grouped: Record<GroupType, TargetPerson[]> = {
-				Member: [],
-				Activist: [],
-				Supporter: [],
+				member: [],
+				activist: [],
+				supporter: [],
 			};
 			function isGroupType(val: unknown): val is GroupType {
-				return val === 'Member' || val === 'Activist' || val === 'Supporter';
+				return val === 'member' || val === 'activist' || val === 'supporter';
 			}
 			(data as FirestoreTargetPerson[]).forEach((item) => {
 				const groupType = item.groupType;
@@ -170,24 +217,26 @@ const ProfileTargets: React.FC = () => {
 				}
 			});
 			setGroups([
-				{ type: 'Member', persons: grouped.Member },
-				{ type: 'Activist', persons: grouped.Activist },
-				{ type: 'Supporter', persons: grouped.Supporter },
+				{ type: 'member', persons: grouped.member },
+				{ type: 'activist', persons: grouped.activist },
+				{ type: 'supporter', persons: grouped.supporter },
 			]);
 			setNewPerson({ name: '', address: '', phone: '', books: [], targetDate: '' });
 			setBookInput('');
 			setEditPersonId(null);
 			setShowModal(false);
-		} catch {
+		} catch (err) {
+			console.error('[handleAddPerson] Error:', err);
 			alert('Failed to save target.');
 		} finally {
 			setSaving(false);
 		}
 	};
 
-	// Edit handler: populate form with selected person's data
-	const handleEditPerson = (group: GroupType, idx: number) => {
-		const person = groups.find(g => g.type === group)?.persons[idx];
+	// Edit handler: populate form with selected person's data (by id)
+	const handleEditPerson = (group: GroupType, personId: string | undefined) => {
+		if (!personId) return;
+		const person = groups.find(g => g.type === group)?.persons.find(p => p.id === personId);
 		if (person) {
 			setNewPerson({ ...person });
 			setBookInput('');
@@ -235,9 +284,9 @@ const ProfileTargets: React.FC = () => {
 													<label style={{ fontWeight: 500 }}>
 														Select Group:
 														<select value={selectedGroup} onChange={e => setSelectedGroup(e.target.value as GroupType)} className={styles.select} style={{ marginLeft: 8 }}>
-															<option value="Member">Member</option>
-															<option value="Activist">Activist</option>
-															<option value="Supporter">Supporter</option>
+															<option value="member">Member</option>
+															<option value="activist">Activist</option>
+															<option value="supporter">Supporter</option>
 														</select>
 													</label>
 												</div>
@@ -290,26 +339,25 @@ const ProfileTargets: React.FC = () => {
 								<div className={styles.targetList}>
 									{groups.map((group) => (
 										<div key={group.type} className={styles.targetCard}>
-											<h3 className={styles.targetGroupTitle}>{group.type} Target</h3>
+											<h3 className={styles.targetGroupTitle}>{group.type.charAt(0).toUpperCase() + group.type.slice(1)} Target</h3>
 											<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-												{group.persons.map((person, idx) => {
-													const personKey = `${group.type}-${person.id ?? idx}`;
+												{group.persons.map((person) => {
+													const personKey = `${group.type}-${person.id}`;
 													const expanded = !!expandedPersons[personKey];
 													const togglePerson = () => setExpandedPersons(prev => ({ ...prev, [personKey]: !prev[personKey] }));
 													return (
-														<li key={idx} className={styles.targetPerson} style={{ borderBottom: '1px solid #eee', padding: '10px 0', textAlign: 'left' }}>
+														<li key={person.id} className={styles.targetPerson} style={{ borderBottom: '1px solid #eee', padding: '10px 0', textAlign: 'left', position: 'relative' }}>
 															<div
 																className={styles.targetPersonName}
 																style={{ minWidth: 120, textAlign: 'left', display: 'flex', alignItems: 'center', position: 'relative', justifyContent: 'space-between', cursor: 'pointer', fontWeight: 500 }}
 																onClick={togglePerson}
 															>
 																<span style={{ display: 'flex', alignItems: 'center' }}>
-
 																	<span>{person.name}</span>
 																	<button
 																		type="button"
 																		aria-label="Edit"
-																		onClick={e => { e.stopPropagation(); handleEditPerson(group.type, idx); }}
+																		onClick={e => { e.stopPropagation(); handleEditPerson(group.type, person.id); }}
 																		style={{
 																			marginLeft: 8,
 																			background: 'none',
@@ -323,6 +371,28 @@ const ProfileTargets: React.FC = () => {
 																		<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 																			<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2Zm2.12-2.12a3.2 3.2 0 0 0-4.53 0l-9.2 9.2a1 1 0 0 0-.26.48l-.8 4.2a1 1 0 0 0 1.18 1.18l4.2-.8a1 1 0 0 0 .48-.26l9.2-9.2a3.2 3.2 0 0 0 0-4.53Z" fill="#ffc107" />
 																		</svg>
+																	</button>
+																	{/* X button for delete */}
+																	<button
+																		type="button"
+																		aria-label="Delete"
+																		onClick={e => {
+																			e.stopPropagation();
+																			handleTargetDelete(person.id);
+																		}}
+
+																		style={{
+																			marginLeft: 8,
+																			background: 'none',
+																			border: 'none',
+																			color: '#d00',
+																			fontWeight: 'bold',
+																			fontSize: 18,
+																			cursor: 'pointer',
+																			lineHeight: 1,
+																		}}
+																	>
+																		&times;
 																	</button>
 																</span>
 																<span style={{ fontSize: 16, marginLeft: 8 }}>{expanded ? '▼' : '▶'}</span>

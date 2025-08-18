@@ -3,7 +3,7 @@ import { db } from './config';
 // Update a target person by document ID
 export const updateTargetPerson = async (
   id: string,
-  data: Partial<TargetPerson> & { groupType: 'Member' | 'Activist' | 'Supporter' }
+  data: Partial<TargetPerson> & { groupType: 'member' | 'activist' | 'supporter' }
 ) => {
   const ref = doc(db, 'targets', id);
   await updateDoc(ref, data);
@@ -24,13 +24,13 @@ export interface TargetPerson {
 }
 
 export interface TargetGroup {
-  type: 'Member' | 'Activist' | 'Supporter';
+  type: 'member' | 'activist' | 'supporter';
   persons: TargetPerson[];
 }
 
 export const addTargetPerson = async (
   userId: string,
-  groupType: 'Member' | 'Activist' | 'Supporter',
+  groupType: 'member' | 'activist' | 'supporter',
   person: TargetPerson
 ) => {
   await addDoc(collection(db, 'targets'), {
