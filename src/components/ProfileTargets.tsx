@@ -41,6 +41,7 @@ const ProfileTargets: React.FC = () => {
 	// ...existing state and variable declarations...
 
 	// Delete handler for a person by id
+	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const handleTargetDelete = async (personId: string | undefined) => {
 		if (!personId) {
 			alert('Invalid person ID');
@@ -48,6 +49,7 @@ const ProfileTargets: React.FC = () => {
 			return;
 		}
 		if (!window.confirm('Are you sure you want to delete this person?')) return;
+		setDeletingId(personId);
 		setSaving(true);
 		try {
 			await deleteTargetPerson(personId);
@@ -78,6 +80,7 @@ const ProfileTargets: React.FC = () => {
 			alert('Failed to delete target.');
 		} finally {
 			setSaving(false);
+			setDeletingId(null);
 		}
 	};
 	// Accordion expand/collapse state for each person (keyed by group+index)
@@ -171,6 +174,7 @@ const ProfileTargets: React.FC = () => {
 				const data = await getTargetPersons(currentUser.uid);
 				const oldPerson = (data as FirestoreTargetPerson[]).find((item) => item.id === editPersonId);
 				console.log('[Edit] editPersonId:', editPersonId, 'oldPerson:', oldPerson, 'selectedGroup:', selectedGroup, 'personToSave:', personToSave);
+
 				if (oldPerson) {
 					if (oldPerson.groupType !== selectedGroup) {
 						// Group changed: delete old, add new
@@ -389,7 +393,7 @@ const ProfileTargets: React.FC = () => {
 																			e.stopPropagation();
 																			handleTargetDelete(person.id);
 																		}}
-
+																		disabled={deletingId === person.id}
 																		style={{
 																			marginLeft: 8,
 																			background: 'none',
@@ -397,11 +401,11 @@ const ProfileTargets: React.FC = () => {
 																			color: '#d00',
 																			fontWeight: 'bold',
 																			fontSize: 18,
-																			cursor: 'pointer',
+																			cursor: deletingId === person.id ? 'wait' : 'pointer',
 																			lineHeight: 1,
 																		}}
 																	>
-																		&times;
+																		{deletingId === person.id ? 'deleting...' : '×'}
 																	</button>
 																</span>
 																<span style={{ fontSize: 16, marginLeft: 8 }}>{expanded ? '▼' : '▶'}</span>
