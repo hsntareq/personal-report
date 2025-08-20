@@ -1,3 +1,201 @@
+.targetPersonDetails,
+.targetPersonDate,
+.targetPersonBooks {
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.personNameContainer {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.personName {
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.actionButton {
+	font-size: 16px;
+}
+
+.groupTitle {
+	font-size: 1.15rem;
+	font-weight: 700;
+}
+
+.targetTitle {
+	font-size: 1.25rem;
+	font-weight: 800;
+	letter-spacing: 0.01em;
+}
+
+.card h2,
+.targetTitle {
+	font-size: 1.25rem;
+	font-weight: 800;
+	margin-bottom: 16px;
+}
+
+.groupCard {
+	background: #f8fbff;
+	border-radius: 12px;
+	border-left: 6px solid var(--group-border, #007bff);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	margin-bottom: 24px;
+	padding: 18px 18px 10px 18px;
+	border: 1px solid #e3e8ee;
+	transition: box-shadow 0.18s, border 0.18s;
+}
+
+.groupCard.member {
+	--group-border: #007bff;
+}
+
+.groupCard.activist {
+	--group-border: #28a745;
+}
+
+.groupCard.supporter {
+	--group-border: #ffc107;
+}
+
+.groupHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+
+.groupTitle {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #222;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.avatarCircle {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, #007bff 60%, #0056b3 100%);
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 1.1rem;
+	margin-right: 8px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.avatarCircle.activist {
+	background: linear-gradient(135deg, #28a745 60%, #218838 100%);
+}
+
+.avatarCircle.supporter {
+	background: linear-gradient(135deg, #ffc107 60%, #ff9800 100%);
+	color: #222;
+}
+
+.personRow {
+	&:not(:last-child) {
+		border-bottom: 1px solid #eee;
+	}
+
+	padding: 12px;
+	text-align: left;
+	position: relative;
+	background: transparent;
+	border-radius: 0;
+	margin-bottom: 0;
+	box-shadow: none;
+	transition: background 0.18s,
+	box-shadow 0.18s;
+	display: flex;
+	flex-direction: column;
+}
+
+.personRow.expanded {
+	background: #eaf4ff;
+	border-radius: 8px;
+	margin-bottom: 6px;
+	box-shadow: 0 2px 8px rgba(0, 123, 255, 0.07);
+}
+
+.personRowMain {
+	text-align: left;
+	display: flex;
+	align-items: center;
+	position: relative;
+	font-weight: 500;
+	min-width: 100%;
+}
+
+.personRowContent {
+	display: flex;
+	align-items: center;
+}
+
+.accordionArrow {
+	font-size: 18px;
+	margin-right: 8px;
+	color: #888;
+	user-select: none;
+}
+
+
+.personRowContent {
+	font-size: 16px;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	justify-content: space-between;
+	cursor: pointer;
+}
+
+.actionButton {
+	background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-weight: 600;
+	padding: 0;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+	cursor: pointer;
+	transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: .5em 1em;
+}
+
+.square {
+	width: 40px;
+	height: 36px;
+	padding: 0;
+}
+
+.actionButton:disabled {
+	background: #e3e8ee;
+	color: #aaa;
+	cursor: not-allowed;
+}
+
+.actionButton.alt {
+	background: linear-gradient(90deg, #ffc107 60%, #ff9800 100%);
+	color: #222;
+}
+
+.actionButton.danger {
+	background: linear-gradient(90deg, #d00 60%, #a00 100%);
+	color: #fff;
+}
+
 .tabs {
 	display: flex;
 	gap: 16px;
@@ -131,19 +329,4 @@
 
 .targetPersonName {
 	font-weight: 600;
-	font-size: 16px;
-}
-
-.targetPersonDetails {
-	color: #555;
-	font-size: 14px;
-}
-
-.targetPersonDate {
-	/* color: #007bff; */
-}
-
-.targetPersonBooks {
-	font-size: 13px;
-	color: #888;
 }
