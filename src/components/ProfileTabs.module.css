@@ -1,99 +1,115 @@
 .targetHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 18px;
 }
+
 .targetTitle {
-  font-size: 1.5rem;
-  color: #222;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+	font-size: 1.5rem;
+	color: #222;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	margin: 0;
 }
+
 .addButton {
-  background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 8px 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+	background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	font-size: 1rem;
+	font-weight: 600;
+	padding: 8px 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+	cursor: pointer;
+	transition: background 0.2s, box-shadow 0.2s;
 }
+
 .addButton:hover {
-  background: linear-gradient(90deg, #0056b3 60%, #007bff 100%);
-  box-shadow: 0 4px 16px rgba(0,123,255,0.10);
+	background: linear-gradient(90deg, #0056b3 60%, #007bff 100%);
+	box-shadow: 0 4px 16px rgba(0, 123, 255, 0.10);
 }
+
 .personCard {
-  background: #f9fafd;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  margin-bottom: 18px;
-  padding: 18px 18px 10px 18px;
-  border: 1px solid #e3e8ee;
+	background: #f9fafd;
+	border-radius: 8px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+	margin-bottom: 18px;
+	padding: 18px 18px 10px 18px;
+	border: 1px solid #e3e8ee;
 }
+
 .personCardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
 }
+
 .personName {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #222;
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: #222;
 }
+
 .tabContent {
-  padding: 24px 0;
+	padding: 24px 0;
 }
+
 .tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+	display: flex;
+	gap: 8px;
+	margin-bottom: 16px;
 }
+
 .tabButton {
-  background: #f5f7fa;
-  border: 1px solid #d0d7de;
-  border-radius: 6px 6px 0 0;
-  padding: 8px 20px;
-  font-size: 16px;
-  color: #555;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+	background: #f5f7fa;
+	border: 1px solid #d0d7de;
+	border-radius: 6px 6px 0 0;
+	padding: 8px 20px;
+	font-size: 16px;
+	color: #555;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
 }
+
 .tabButtonActive {
-  background: #fff;
-  color: #007bff;
-  border-bottom: 2px solid #007bff;
-  font-weight: 600;
+	background: #fff;
+	color: #007bff;
+	border-bottom: 2px solid #007bff;
+	font-weight: 600;
 }
+
 .card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  padding: 32px 24px;
-  margin-bottom: 24px;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+	padding: 32px 24px;
+	margin-bottom: 24px;
 }
+
 .tabSectionTitle {
-  color: #007bff;
-  font-size: 22px;
-  margin-bottom: 18px;
-  font-weight: 600;
+	color: #007bff;
+	font-size: 22px;
+	margin-bottom: 18px;
+	font-weight: 600;
 }
+
 .tabSectionText {
-  color: #444;
-  font-size: 16px;
-  margin-bottom: 12px;
+	color: #444;
+	font-size: 16px;
+	margin-bottom: 12px;
 }
+
 .tabSectionList {
-  color: #333;
-  font-size: 15px;
-  margin-left: 18px;
-  margin-bottom: 12px;
+	color: #333;
+	font-size: 15px;
+	margin-left: 18px;
+	margin-bottom: 12px;
 }
+
 .tabSectionHighlight {
-  color: #d00;
-  font-weight: 500;
+	color: #d00;
+	font-weight: 500;
 }

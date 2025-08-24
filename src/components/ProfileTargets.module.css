@@ -29,6 +29,7 @@
 	font-size: 1.25rem;
 	font-weight: 800;
 	letter-spacing: 0.01em;
+	margin: 0;
 }
 
 .card h2,
@@ -117,13 +118,14 @@
 	box-shadow 0.18s;
 	display: flex;
 	flex-direction: column;
+	border: 1px solid transparent;
 }
 
 .personRow.expanded {
 	background: #eaf4ff;
 	border-radius: 8px;
 	margin-bottom: 6px;
-	box-shadow: 0 2px 8px rgba(0, 123, 255, 0.07);
+	border: 1px solid #cce0ff;
 }
 
 .personRowMain {
@@ -158,20 +160,25 @@
 }
 
 .actionButton {
-	background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+	background: #999;
 	color: #fff;
-	border: none;
+	border: 1px solid #eee;
 	border-radius: 6px;
 	font-size: 1rem;
 	font-weight: 600;
 	padding: 0;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 	cursor: pointer;
-	transition: background 0.2s, box-shadow 0.2s, color 0.2s;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	padding: .5em 1em;
+}
+
+.dark {
+	background: #333;
+	color: #fff;
+	border: 1px solid #555;
 }
 
 .square {
@@ -192,7 +199,7 @@
 }
 
 .actionButton.danger {
-	background: linear-gradient(90deg, #d00 60%, #a00 100%);
+	/* background: rgb(210, 50, 50); */
 	color: #fff;
 }
 

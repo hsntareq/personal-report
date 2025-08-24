@@ -132,9 +132,9 @@ const ProfileTargets: React.FC = () => {
 					}
 				});
 				setGroups([
-					{ type: 'member', persons: grouped.member },
-					{ type: 'activist', persons: grouped.activist },
 					{ type: 'supporter', persons: grouped.supporter },
+					{ type: 'activist', persons: grouped.activist },
+					{ type: 'member', persons: grouped.member },
 				]);
 			} catch {
 				setGroups(initialGroups);
@@ -260,6 +260,19 @@ const ProfileTargets: React.FC = () => {
 		}
 	};
 
+	const memberBangla = (type: string) => {
+		switch (type) {
+			case 'member':
+				return 'সদস্য';
+			case 'activist':
+				return 'কর্মী';
+			case 'supporter':
+				return 'সহযোগী';
+			default:
+				return type;
+		}
+	}
+
 	return (
 		<div className="profile-targets">
 			<div className={tabStyles.tabs}>
@@ -278,10 +291,10 @@ const ProfileTargets: React.FC = () => {
 					{activeTab === 'Target' && (
 						<div className={tabStyles.card}>
 							<div className={tabStyles.targetHeader}>
-								<h2 className={tabStyles.targetTitle}>🎯 Target Groups</h2>
-								<button className={styles.actionButton} type="button" onClick={openAddModal}>+ Add Person</button>
+								<h2 className={tabStyles.targetTitle}>🎯 টার্গেট নির্ধারন</h2>
+								<button className={`${styles.actionButton} ${styles.dark}`} type="button" onClick={openAddModal}>+ নতুন টার্গেট</button>
 							</div>
-							{loading ? <div style={{ textAlign: 'center', padding: 32 }}>Loading...</div> : <>
+							{loading ? <div style={{ textAlign: 'center', padding: 32 }}>লোড হচ্ছে...</div> : <>
 								{/* Select Group field moved into modal below */}
 								{showModal && (
 									<div className={modalStyles.modalOverlay}>
@@ -296,25 +309,27 @@ const ProfileTargets: React.FC = () => {
 											>
 												<div style={{ marginBottom: 18, display: 'flex', gap: 16, alignItems: 'center' }}>
 													<label style={{ fontWeight: 500 }}>
-														Select Group:
+														সাংগঠনিক মান:
 														<select value={selectedGroup} onChange={e => setSelectedGroup(e.target.value as GroupType)} className={styles.select} style={{ marginLeft: 8 }}>
-															<option value="member">Member</option>
-															<option value="activist">Activist</option>
-															<option value="supporter">Supporter</option>
+															{
+																groups.map(group => (
+																	<option key={group.type} value={group.type}>{memberBangla(group.type)}</option>
+																))
+															}
 														</select>
 													</label>
 												</div>
 												<div className={styles.inputRow}>
-													<input type="text" placeholder="Name" value={newPerson.name} onChange={e => setNewPerson({ ...newPerson, name: e.target.value })} className={styles.input} />
-													<input type="text" placeholder="Address" value={newPerson.address} onChange={e => setNewPerson({ ...newPerson, address: e.target.value })} className={styles.input} />
+													<input type="text" placeholder="নাম" value={newPerson.name} onChange={e => setNewPerson({ ...newPerson, name: e.target.value })} className={styles.input} />
+													<input type="text" placeholder="ঠিকানা" value={newPerson.address} onChange={e => setNewPerson({ ...newPerson, address: e.target.value })} className={styles.input} />
 												</div>
 												<div className={styles.inputRow}>
-													<input type="text" placeholder="Phone" value={newPerson.phone} onChange={e => setNewPerson({ ...newPerson, phone: e.target.value })} className={styles.input} />
-													<input type="date" placeholder="Target Date" value={newPerson.targetDate} onChange={e => setNewPerson({ ...newPerson, targetDate: e.target.value })} className={styles.input} />
+													<input type="text" placeholder="মোবাইল" value={newPerson.phone} onChange={e => setNewPerson({ ...newPerson, phone: e.target.value })} className={styles.input} />
+													<input type="date" placeholder="টার্গেট তারিখ" value={newPerson.targetDate} onChange={e => setNewPerson({ ...newPerson, targetDate: e.target.value })} className={styles.input} />
 												</div>
 												<div className={styles.booksInput}>
-													<input type="text" placeholder="Add Book" value={bookInput} onChange={e => setBookInput(e.target.value)} className={styles.input} />
-													<button type="button" className={styles.actionButton} onClick={handleAddBook}>+ More</button>
+													<input type="text" placeholder="বই যোগ করুন" value={bookInput} onChange={e => setBookInput(e.target.value)} className={styles.input} />
+													<button type="button" className={styles.actionButton} onClick={handleAddBook}>+ আরও</button>
 												</div>
 												<div className={styles.booksList}>
 													{newPerson.books.map((book, idx) => (
@@ -345,123 +360,125 @@ const ProfileTargets: React.FC = () => {
 														</span>
 													))}
 												</div>
-												<button type="submit" disabled={saving} className={styles.actionButton} style={{ marginTop: 12 }}>{saving ? 'Saving...' : (editPersonId ? 'Save Changes' : 'Add Person')}</button>
+												<button type="submit" disabled={saving} className={styles.actionButton} style={{ marginTop: 12 }}>{saving ? 'সংরক্ষণ হচ্ছে...' : (editPersonId ? 'টার্গেট আপডেট করুন' : 'টার্গেট যোগ করুন')}</button>
 											</form>
 										</div>
 									</div>
 								)}
 								<div className={styles.targetList}>
-									{groups.map((group) => (
-										<div
-											key={group.type}
-											className={`${styles.groupCard} ${styles[group.type]}`}
-										>
-											<div className={styles.groupHeader}>
-												<span className={styles.groupTitle}>
-													<span className={`${styles.avatarCircle} ${styles[group.type]}`}>{group.type.charAt(0).toUpperCase()}</span>
-													{group.type.charAt(0).toUpperCase() + group.type.slice(1)} Target
-												</span>
-											</div>
-											<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-												{group.persons.map((person) => {
-													const personKey = `${group.type}-${person.id}`;
-													const expanded = !!expandedPersons[personKey];
-													const togglePerson = () => setExpandedPersons(prev => ({ ...prev, [personKey]: !prev[personKey] }));
-													return (
-														<li
-															key={person.id}
-															className={expanded ? `${styles.personRow} ${styles.expanded}` : styles.personRow}
-														>
-															<div
-																className={styles.personRowMain}
-																onClick={togglePerson}
+									{groups.map((group) => {
+										return (
+											<div
+												key={group.type} title={group.type}
+												className={`${styles.groupCard} ${styles[group.type]}`}
+											>
+												<div className={styles.groupHeader}>
+													<span className={styles.groupTitle}>
+														<span className={`${styles.avatarCircle} ${styles[group.type]}`}>{group.type.charAt(0).toUpperCase()}</span>
+														{memberBangla(group.type)} টার্গেট
+													</span>
+												</div>
+												<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+													{group.persons.map((person) => {
+														const personKey = `${group.type}-${person.id}`;
+														const expanded = !!expandedPersons[personKey];
+														const togglePerson = () => setExpandedPersons(prev => ({ ...prev, [personKey]: !prev[personKey] }));
+														return (
+															<li
+																key={person.id}
+																className={expanded ? `${styles.personRow} ${styles.expanded}` : styles.personRow}
 															>
-																<div className={styles.personRowContent}>
-																	<div>
-																		<span className={styles.accordionArrow}>{expanded ? '▼' : '▶'}</span>
-																		<span className={styles.personName}>{person.name}</span>
-																	</div>
-																	<div className={styles.personNameContainer}>
-																		<button
-																			type="button"
-																			aria-label="Edit"
-																			className={`${styles.actionButton} ${styles.square}`}
-																			onClick={e => { e.stopPropagation(); handleEditPerson(group.type, person.id); }}
-																		>
-																			<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-																				<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2Zm2.12-2.12a3.2 3.2 0 0 0-4.53 0l-9.2 9.2a1 1 0 0 0-.26.48l-.8 4.2a1 1 0 0 0 1.18 1.18l4.2-.8a1 1 0 0 0 .48-.26l9.2-9.2a3.2 3.2 0 0 0 0-4.53Z" fill="#fff" />
-																			</svg>
-																		</button>
-																		<button
-																			type="button"
-																			aria-label="Delete"
-																			className={`${styles.actionButton} ${styles.danger} ${styles.square}`}
-																			onClick={e => {
-																				e.stopPropagation();
-																				handleTargetDelete(person.id);
-																			}}
-																			disabled={deletingId === person.id}
-																		>
-																			{deletingId === person.id ? (
-																				<svg width="18" height="18" viewBox="0 0 50 50" style={{ display: 'block' }}>
-																					<circle
-																						cx="25"
-																						cy="25"
-																						r="20"
-																						fill="none"
-																						stroke="#fff"
-																						strokeWidth="5"
-																						strokeDasharray="31.4 31.4"
-																						strokeLinecap="round"
-																						transform="rotate(-90 25 25)"
-																					>
-																						<animateTransform
-																							attributeName="transform"
-																							type="rotate"
-																							from="0 25 25"
-																							to="360 25 25"
-																							dur="1s"
-																							repeatCount="indefinite"
-																						/>
-																					</circle>
+																<div
+																	className={styles.personRowMain}
+																	onClick={togglePerson}
+																>
+																	<div className={styles.personRowContent}>
+																		<div>
+																			<span className={styles.accordionArrow}>{expanded ? '▼' : '▶'}</span>
+																			<span className={styles.personName}>{person.name}</span>
+																		</div>
+																		<div className={styles.personNameContainer}>
+																			<button
+																				type="button"
+																				aria-label="Edit"
+																				className={`${styles.actionButton} ${styles.square}`}
+																				onClick={e => { e.stopPropagation(); handleEditPerson(group.type, person.id); }}
+																			>
+																				<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+																					<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2Zm2.12-2.12a3.2 3.2 0 0 0-4.53 0l-9.2 9.2a1 1 0 0 0-.26.48l-.8 4.2a1 1 0 0 0 1.18 1.18l4.2-.8a1 1 0 0 0 .48-.26l9.2-9.2a3.2 3.2 0 0 0 0-4.53Z" fill="#555" />
 																				</svg>
+																			</button>
+																			<button
+																				type="button"
+																				aria-label="Delete"
+																				className={`${styles.actionButton} ${styles.danger} ${styles.square}`}
+																				onClick={e => {
+																					e.stopPropagation();
+																					handleTargetDelete(person.id);
+																				}}
+																				disabled={deletingId === person.id}
+																			>
+																				{deletingId === person.id ? (
+																					<svg width="18" height="18" viewBox="0 0 50 50" style={{ display: 'block' }}>
+																						<circle
+																							cx="25"
+																							cy="25"
+																							r="20"
+																							fill="none"
+																							stroke="#555"
+																							strokeWidth="5"
+																							strokeDasharray="31.4 31.4"
+																							strokeLinecap="round"
+																							transform="rotate(-90 25 25)"
+																						>
+																							<animateTransform
+																								attributeName="transform"
+																								type="rotate"
+																								from="0 25 25"
+																								to="360 25 25"
+																								dur="1s"
+																								repeatCount="indefinite"
+																							/>
+																						</circle>
+																					</svg>
+																				) : (
+																					<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+																						<line x1="4" y1="4" x2="14" y2="14" stroke="#555" strokeWidth="2" />
+																						<line x1="14" y1="4" x2="4" y2="14" stroke="#555" strokeWidth="2" />
+																					</svg>
+																				)}
+																			</button>
+																		</div>
+																	</div>
+																</div>
+																{expanded && (
+																	<div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 8, flexDirection: 'column' }}>
+																		<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>ঠিকানা:</strong> {person.address}</span>
+																		<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>ফোন:</strong> <a href={`tel:${person.phone}`}>{person.phone}</a></span>
+																		<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
+																			<strong>টার্গেটের তারিখ:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+																		</span>
+																		<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
+																			<strong>বই অধ্যয়ন:</strong>
+																			{person.books.length > 0 ? (
+																				<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
+																					{person.books.map((book, bidx) => (
+																						<li key={bidx}>{book}</li>
+																					))}
+																				</ol>
 																			) : (
-																				<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-																					<line x1="4" y1="4" x2="14" y2="14" stroke="#fff" strokeWidth="2" />
-																					<line x1="14" y1="4" x2="4" y2="14" stroke="#fff" strokeWidth="2" />
-																				</svg>
+																				<span style={{ color: '#aaa' }}>None</span>
 																			)}
-																		</button>
+																		</div>
 																	</div>
-																</div>
-															</div>
-															{expanded && (
-																<div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 8, flexDirection: 'column' }}>
-																	<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>Address:</strong> {person.address}</span>
-																	<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>Phone:</strong> {person.phone}</span>
-																	<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
-																		<strong>Date of target:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
-																	</span>
-																	<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
-																		<strong>Books:</strong>
-																		{person.books.length > 0 ? (
-																			<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
-																				{person.books.map((book, bidx) => (
-																					<li key={bidx}>{book}</li>
-																				))}
-																			</ol>
-																		) : (
-																			<span style={{ color: '#aaa' }}>None</span>
-																		)}
-																	</div>
-																</div>
-															)}
-														</li>
-													);
-												})}
-											</ul>
-										</div>
-									))}
+																)}
+															</li>
+														);
+													})}
+												</ul>
+											</div>
+										)
+									})}
 								</div>
 							</>}
 						</div>
