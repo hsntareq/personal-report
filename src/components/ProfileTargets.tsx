@@ -24,9 +24,9 @@ type TabType = typeof TABS[number];
 import React, { useEffect, useState } from 'react';
 import { addTargetPerson, deleteTargetPerson, getTargetPersons, updateTargetPerson } from '../firebase/targets';
 import { useAuth } from '../hooks/useAuth';
-import modalStyles from './Modal.module.css';
 import tabStyles from './ProfileTabs.module.css';
 import styles from './ProfileTargets.module.css';
+import AddTargetModal from './target/AddTargetModal';
 // Firestore document type for a person
 type FirestoreTargetPerson = {
 	id?: string;
@@ -297,73 +297,25 @@ const ProfileTargets: React.FC = () => {
 							{loading ? <div style={{ textAlign: 'center', padding: 32 }}>লোড হচ্ছে...</div> : <>
 								{/* Select Group field moved into modal below */}
 								{showModal && (
-									<div className={modalStyles.modalOverlay}>
-										<div className={modalStyles.modalContent}>
-											<button className={modalStyles.closeBtn} onClick={() => setShowModal(false)}>&times;</button>
-											<h3 style={{ marginBottom: 18 }}>{editPersonId ? 'Edit Person' : 'Add Person'}</h3>
-											<form
-												onSubmit={e => {
-													e.preventDefault();
-													handleAddPerson();
-												}}
-											>
-												<div style={{ marginBottom: 18, display: 'flex', gap: 16, alignItems: 'center' }}>
-													<label style={{ fontWeight: 500 }}>
-														সাংগঠনিক মান:
-														<select value={selectedGroup} onChange={e => setSelectedGroup(e.target.value as GroupType)} className={styles.select} style={{ marginLeft: 8 }}>
-															{
-																groups.map(group => (
-																	<option key={group.type} value={group.type}>{memberBangla(group.type)}</option>
-																))
-															}
-														</select>
-													</label>
-												</div>
-												<div className={styles.inputRow}>
-													<input type="text" placeholder="নাম" value={newPerson.name} onChange={e => setNewPerson({ ...newPerson, name: e.target.value })} className={styles.input} />
-													<input type="text" placeholder="ঠিকানা" value={newPerson.address} onChange={e => setNewPerson({ ...newPerson, address: e.target.value })} className={styles.input} />
-												</div>
-												<div className={styles.inputRow}>
-													<input type="text" placeholder="মোবাইল" value={newPerson.phone} onChange={e => setNewPerson({ ...newPerson, phone: e.target.value })} className={styles.input} />
-													<input type="date" placeholder="টার্গেট তারিখ" value={newPerson.targetDate} onChange={e => setNewPerson({ ...newPerson, targetDate: e.target.value })} className={styles.input} />
-												</div>
-												<div className={styles.booksInput}>
-													<input type="text" placeholder="বই যোগ করুন" value={bookInput} onChange={e => setBookInput(e.target.value)} className={styles.input} />
-													<button type="button" className={styles.actionButton} onClick={handleAddBook}>+ আরও</button>
-												</div>
-												<div className={styles.booksList}>
-													{newPerson.books.map((book, idx) => (
-														<span key={idx} className={styles.bookItem} style={{ display: 'inline-flex', alignItems: 'center', marginRight: 6 }}>
-															{book}
-															<button
-																type="button"
-																aria-label="Remove book"
-																style={{
-																	marginLeft: 4,
-																	background: 'none',
-																	border: 'none',
-																	color: '#d00',
-																	fontWeight: 'bold',
-																	fontSize: 16,
-																	cursor: 'pointer',
-																	lineHeight: 1,
-																}}
-																onClick={() => {
-																	setNewPerson(p => ({
-																		...p,
-																		books: p.books.filter((_, bidx) => bidx !== idx)
-																	}));
-																}}
-															>
-																&times;
-															</button>
-														</span>
-													))}
-												</div>
-												<button type="submit" disabled={saving} className={styles.actionButton} style={{ marginTop: 12 }}>{saving ? 'সংরক্ষণ হচ্ছে...' : (editPersonId ? 'টার্গেট আপডেট করুন' : 'টার্গেট যোগ করুন')}</button>
-											</form>
-										</div>
-									</div>
+									<AddTargetModal
+										show={showModal}
+										onClose={() => setShowModal(false)}
+										onSubmit={e => {
+											e.preventDefault();
+											handleAddPerson();
+										}}
+										selectedGroup={selectedGroup}
+										setSelectedGroup={setSelectedGroup}
+										groups={groups}
+										memberBangla={memberBangla}
+										newPerson={newPerson}
+										setNewPerson={setNewPerson}
+										bookInput={bookInput}
+										setBookInput={setBookInput}
+										handleAddBook={handleAddBook}
+										saving={saving}
+										editPersonId={editPersonId}
+									/>
 								)}
 								<div className={styles.targetList}>
 									{groups.map((group) => {
