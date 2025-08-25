@@ -1,6 +1,6 @@
 import React from 'react';
-import modalStyles from '../Modal.module.css';
-import styles from '../ProfileTargets.module.css';
+import modalStyles from '../../scss/components/Modal.module.scss';
+import styles from '../../scss/components/ProfileTargets.module.scss';
 
 interface Book {
 	section: string;

@@ -1,3 +1,5 @@
+@use './_mixins.scss' as *;
+
 * {
 	box-sizing: border-box;
 }
@@ -8,10 +10,15 @@
 	align-items: center;
 	justify-content: center;
 	width: 100vw;
+
 }
 
 .main-wrapper {
-	width: 1170px;
+	width: 100%;
+
+	@include above(sm) {
+		width: 1170px;
+	}
 }
 
 .main-container {

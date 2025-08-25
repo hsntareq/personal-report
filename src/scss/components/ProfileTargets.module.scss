@@ -1,0 +1,340 @@
+// Import variables
+@use '../base/variables' as *;
+
+// Base styles
+.targetPersonDetails,
+.targetPersonDate,
+.targetPersonBooks {
+  font-size: $font-size-base;
+  font-weight: 400;
+}
+
+.personNameContainer {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.personName {
+  font-weight: 600;
+  font-size: $font-size-base;
+}
+
+.groupTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.targetTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+
+.card h2,
+.targetTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: $spacing-md;
+}
+
+// Group Cards
+.groupCard {
+  background: $background-blue;
+  border-radius: $border-radius-xl;
+  border-left: $spacing-sm solid var(--group-border, $primary-color);
+  box-shadow: 0 2px 8px $shadow-dark;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-lg $spacing-lg 10px $spacing-lg;
+  border: 1px solid $border-color;
+  transition: box-shadow 0.18s, border 0.18s;
+
+  &.member {
+    --group-border: #{$primary-color};
+  }
+
+  &.activist {
+    --group-border: #{$success-color};
+  }
+
+  &.supporter {
+    --group-border: #{$warning-color};
+  }
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.groupTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: $text-dark;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+// Avatar Circles
+.avatarCircle {
+  width: $spacing-xl;
+  height: $spacing-xl;
+  border-radius: $border-radius-circle;
+  background: linear-gradient(135deg, $primary-color 60%, $primary-dark 100%);
+  color: $white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-right: $spacing-sm;
+  box-shadow: 0 1px 4px $shadow-avatar;
+
+  &.activist {
+    background: linear-gradient(135deg, $success-color 60%, $success-dark 100%);
+  }
+
+  &.supporter {
+    background: linear-gradient(135deg, $warning-color 60%, $warning-dark 100%);
+    color: $text-dark;
+  }
+}
+
+// Person Rows
+.personRow {
+  padding: $spacing-md;
+  text-align: left;
+  position: relative;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  transition: background 0.18s, box-shadow 0.18s;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid transparent;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $border-light;
+  }
+
+  &.expanded {
+    background: $background-expanded;
+    border-radius: $border-radius-lg;
+    margin-bottom: $spacing-sm;
+    border: 1px solid $primary-lighter;
+  }
+}
+
+.personRowMain {
+  text-align: left;
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-weight: 500;
+  min-width: 100%;
+}
+
+.personRowContent {
+  font-size: $font-size-base;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.accordionArrow {
+  font-size: $font-size-lg;
+  margin-right: $spacing-sm;
+  color: $text-lighter;
+  user-select: none;
+}
+
+// Action Buttons
+.actionButton {
+  background: $gray-500;
+  color: $white;
+  border: 1px solid $border-light;
+  border-radius: $border-radius-md;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5em 1em;
+  box-shadow: 0 2px 8px $shadow-button;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    background: $border-color;
+    color: $text-disabled;
+    cursor: not-allowed;
+  }
+
+  &.dark {
+    background: $text-medium;
+    color: $white;
+    border: 1px solid $text-light;
+  }
+
+  &.square {
+    width: 40px;
+    height: 36px;
+    padding: 0;
+  }
+
+  &.alt {
+    background: linear-gradient(90deg, $warning-color 60%, $warning-dark 100%);
+    color: $text-dark;
+  }
+
+  &.danger {
+    color: $white;
+  }
+}
+
+// Tabs
+.tabs {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.tabButton {
+  padding: $spacing-sm 20px;
+  border: none;
+  border-bottom: 2px solid $border-medium;
+  background: none;
+  font-weight: normal;
+  color: $text-medium;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  transition: border-bottom $transition-normal, color $transition-normal;
+
+  &.tabButtonActive {
+    border-bottom: 3px solid $primary-color;
+    color: $primary-color;
+    font-weight: bold;
+  }
+}
+
+.tabContent {
+  min-height: 350px;
+}
+
+// Cards
+.card {
+  margin: 0;
+  background: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 2px 8px $shadow-light;
+  padding: $spacing-xl;
+  min-height: 300px;
+}
+
+.targetCard {
+  background: $white;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 2px 8px $shadow-light;
+  padding: 20px;
+  margin-bottom: $spacing-lg;
+}
+
+// Forms
+.addPersonForm {
+  background: $gray-100;
+  border-radius: $border-radius-lg;
+  padding: 20px;
+  margin-bottom: $spacing-xl;
+  box-shadow: 0 2px 8px $shadow-light;
+}
+
+.inputRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.input,
+.select {
+  flex: 1;
+  min-width: 120px;
+  padding: $spacing-sm;
+  border-radius: $border-radius-sm;
+  border: 1px solid $border-medium;
+}
+
+.booksInput {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.bookItem {
+  background: $gray-200;
+  border-radius: $border-radius-sm;
+  padding: 2px $spacing-sm;
+  margin-right: 6px;
+  font-size: 13px;
+}
+
+.saveButton {
+  padding: 10px $spacing-lg;
+  background: $success-color;
+  color: $white;
+  border: none;
+  border-radius: $border-radius-sm;
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity $transition-normal;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// Target Lists
+.targetList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.targetGroupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 10px;
+}
+
+.targetGroupTitle {
+  color: $primary-color;
+  margin: 0;
+}
+
+.targetPerson {
+  border-bottom: 1px solid $border-light;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.targetPersonName {
+  font-weight: 600;
+}
+
+

@@ -24,8 +24,8 @@ type TabType = typeof TABS[number];
 import React, { useEffect, useState } from 'react';
 import { addTargetPerson, deleteTargetPerson, getTargetPersons, updateTargetPerson } from '../firebase/targets';
 import { useAuth } from '../hooks/useAuth';
-import tabStyles from './ProfileTabs.module.css';
-import styles from './ProfileTargets.module.css';
+import tabStyles from '../scss/components/ProfileTabs.module.scss';
+import styles from '../scss/components/ProfileTargets.module.scss';
 import AddTargetModal from './target/AddTargetModal';
 // Firestore document type for a person
 type FirestoreTargetPerson = {
@@ -287,179 +287,177 @@ const ProfileTargets: React.FC = () => {
 				))}
 			</div>
 			<div className={tabStyles.tabContent}>
-				<div className={tabStyles.tabContent}>
-					{activeTab === 'Target' && (
-						<div className={tabStyles.card}>
-							<div className={tabStyles.targetHeader}>
-								<h2 className={tabStyles.targetTitle}>🎯 টার্গেট নির্ধারন</h2>
-								<button className={`${styles.actionButton} ${styles.dark}`} type="button" onClick={openAddModal}>+ নতুন টার্গেট</button>
-							</div>
-							{loading ? <div style={{ textAlign: 'center', padding: 32 }}>লোড হচ্ছে...</div> : <>
-								{/* Select Group field moved into modal below */}
-								{showModal && (
-									<AddTargetModal
-										show={showModal}
-										onClose={() => setShowModal(false)}
-										onSubmit={e => {
-											e.preventDefault();
-											handleAddPerson();
-										}}
-										selectedGroup={selectedGroup}
-										setSelectedGroup={setSelectedGroup}
-										groups={groups}
-										memberBangla={memberBangla}
-										newPerson={newPerson}
-										setNewPerson={setNewPerson}
-										bookInput={bookInput}
-										setBookInput={setBookInput}
-										handleAddBook={handleAddBook}
-										saving={saving}
-										editPersonId={editPersonId}
-									/>
-								)}
-								<div className={styles.targetList}>
-									{groups.map((group) => {
-										return (
-											<div
-												key={group.type} title={group.type}
-												className={`${styles.groupCard} ${styles[group.type]}`}
-											>
-												<div className={styles.groupHeader}>
-													<span className={styles.groupTitle}>
-														<span className={`${styles.avatarCircle} ${styles[group.type]}`}>{group.type.charAt(0).toUpperCase()}</span>
-														{memberBangla(group.type)} টার্গেট
-													</span>
-												</div>
-												<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-													{group.persons.map((person) => {
-														const personKey = `${group.type}-${person.id}`;
-														const expanded = !!expandedPersons[personKey];
-														const togglePerson = () => setExpandedPersons(prev => ({ ...prev, [personKey]: !prev[personKey] }));
-														return (
-															<li
-																key={person.id}
-																className={expanded ? `${styles.personRow} ${styles.expanded}` : styles.personRow}
+				{activeTab === 'Target' && (
+					<div className={tabStyles.card}>
+						<div className={tabStyles.targetHeader}>
+							<h2 className={tabStyles.targetTitle}>🎯 টার্গেট নির্ধারন</h2>
+							<button className={`${styles.actionButton} ${styles.dark}`} type="button" onClick={openAddModal}>+ নতুন টার্গেট</button>
+						</div>
+						{loading ? <div style={{ textAlign: 'center', padding: 32 }}>লোড হচ্ছে...</div> : <>
+							{/* Select Group field moved into modal below */}
+							{showModal && (
+								<AddTargetModal
+									show={showModal}
+									onClose={() => setShowModal(false)}
+									onSubmit={e => {
+										e.preventDefault();
+										handleAddPerson();
+									}}
+									selectedGroup={selectedGroup}
+									setSelectedGroup={setSelectedGroup}
+									groups={groups}
+									memberBangla={memberBangla}
+									newPerson={newPerson}
+									setNewPerson={setNewPerson}
+									bookInput={bookInput}
+									setBookInput={setBookInput}
+									handleAddBook={handleAddBook}
+									saving={saving}
+									editPersonId={editPersonId}
+								/>
+							)}
+							<div className={styles.targetList}>
+								{groups.map((group) => {
+									return (
+										<div
+											key={group.type} title={group.type}
+											className={`${styles.groupCard} ${styles[group.type]}`}
+										>
+											<div className={styles.groupHeader}>
+												<span className={styles.groupTitle}>
+													<span className={`${styles.avatarCircle} ${styles[group.type]}`}>{group.type.charAt(0).toUpperCase()}</span>
+													{memberBangla(group.type)} টার্গেট
+												</span>
+											</div>
+											<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+												{group.persons.map((person) => {
+													const personKey = `${group.type}-${person.id}`;
+													const expanded = !!expandedPersons[personKey];
+													const togglePerson = () => setExpandedPersons(prev => ({ ...prev, [personKey]: !prev[personKey] }));
+													return (
+														<li
+															key={person.id}
+															className={expanded ? `${styles.personRow} ${styles.expanded}` : styles.personRow}
+														>
+															<div
+																className={styles.personRowMain}
+																onClick={togglePerson}
 															>
-																<div
-																	className={styles.personRowMain}
-																	onClick={togglePerson}
-																>
-																	<div className={styles.personRowContent}>
-																		<div>
-																			<span className={styles.accordionArrow}>{expanded ? '▼' : '▶'}</span>
-																			<span className={styles.personName}>{person.name}</span>
-																		</div>
-																		<div className={styles.personNameContainer}>
-																			<button
-																				type="button"
-																				aria-label="Edit"
-																				className={`${styles.actionButton} ${styles.square}`}
-																				onClick={e => { e.stopPropagation(); handleEditPerson(group.type, person.id); }}
-																			>
-																				<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-																					<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2Zm2.12-2.12a3.2 3.2 0 0 0-4.53 0l-9.2 9.2a1 1 0 0 0-.26.48l-.8 4.2a1 1 0 0 0 1.18 1.18l4.2-.8a1 1 0 0 0 .48-.26l9.2-9.2a3.2 3.2 0 0 0 0-4.53Z" fill="#555" />
+																<div className={styles.personRowContent}>
+																	<div>
+																		<span className={styles.accordionArrow}>{expanded ? '▼' : '▶'}</span>
+																		<span className={styles.personName}>{person.name}</span>
+																	</div>
+																	<div className={styles.personNameContainer}>
+																		<button
+																			type="button"
+																			aria-label="Edit"
+																			className={`${styles.actionButton} ${styles.square}`}
+																			onClick={e => { e.stopPropagation(); handleEditPerson(group.type, person.id); }}
+																		>
+																			<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+																				<path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-9.2 9.2-2.1.4.4-2.1 9.2-9.2Zm2.12-2.12a3.2 3.2 0 0 0-4.53 0l-9.2 9.2a1 1 0 0 0-.26.48l-.8 4.2a1 1 0 0 0 1.18 1.18l4.2-.8a1 1 0 0 0 .48-.26l9.2-9.2a3.2 3.2 0 0 0 0-4.53Z" fill="#555" />
+																			</svg>
+																		</button>
+																		<button
+																			type="button"
+																			aria-label="Delete"
+																			className={`${styles.actionButton} ${styles.danger} ${styles.square}`}
+																			onClick={e => {
+																				e.stopPropagation();
+																				handleTargetDelete(person.id);
+																			}}
+																			disabled={deletingId === person.id}
+																		>
+																			{deletingId === person.id ? (
+																				<svg width="18" height="18" viewBox="0 0 50 50" style={{ display: 'block' }}>
+																					<circle
+																						cx="25"
+																						cy="25"
+																						r="20"
+																						fill="none"
+																						stroke="#555"
+																						strokeWidth="5"
+																						strokeDasharray="31.4 31.4"
+																						strokeLinecap="round"
+																						transform="rotate(-90 25 25)"
+																					>
+																						<animateTransform
+																							attributeName="transform"
+																							type="rotate"
+																							from="0 25 25"
+																							to="360 25 25"
+																							dur="1s"
+																							repeatCount="indefinite"
+																						/>
+																					</circle>
 																				</svg>
-																			</button>
-																			<button
-																				type="button"
-																				aria-label="Delete"
-																				className={`${styles.actionButton} ${styles.danger} ${styles.square}`}
-																				onClick={e => {
-																					e.stopPropagation();
-																					handleTargetDelete(person.id);
-																				}}
-																				disabled={deletingId === person.id}
-																			>
-																				{deletingId === person.id ? (
-																					<svg width="18" height="18" viewBox="0 0 50 50" style={{ display: 'block' }}>
-																						<circle
-																							cx="25"
-																							cy="25"
-																							r="20"
-																							fill="none"
-																							stroke="#555"
-																							strokeWidth="5"
-																							strokeDasharray="31.4 31.4"
-																							strokeLinecap="round"
-																							transform="rotate(-90 25 25)"
-																						>
-																							<animateTransform
-																								attributeName="transform"
-																								type="rotate"
-																								from="0 25 25"
-																								to="360 25 25"
-																								dur="1s"
-																								repeatCount="indefinite"
-																							/>
-																						</circle>
-																					</svg>
-																				) : (
-																					<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-																						<line x1="4" y1="4" x2="14" y2="14" stroke="#555" strokeWidth="2" />
-																						<line x1="14" y1="4" x2="4" y2="14" stroke="#555" strokeWidth="2" />
-																					</svg>
-																				)}
-																			</button>
-																		</div>
+																			) : (
+																				<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+																					<line x1="4" y1="4" x2="14" y2="14" stroke="#555" strokeWidth="2" />
+																					<line x1="14" y1="4" x2="4" y2="14" stroke="#555" strokeWidth="2" />
+																				</svg>
+																			)}
+																		</button>
 																	</div>
 																</div>
-																{expanded && (
-																	<div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 8, flexDirection: 'column' }}>
-																		<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>ঠিকানা:</strong> {person.address}</span>
-																		<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>ফোন:</strong> <a href={`tel:${person.phone}`}>{person.phone}</a></span>
-																		<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
-																			<strong>টার্গেটের তারিখ:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
-																		</span>
-																		<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
-																			<strong>বই অধ্যয়ন:</strong>
-																			{person.books.length > 0 ? (
-																				<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
-																					{person.books.map((book, bidx) => (
-																						<li key={bidx}>{book}</li>
-																					))}
-																				</ol>
-																			) : (
-																				<span style={{ color: '#aaa' }}>None</span>
-																			)}
-																		</div>
+															</div>
+															{expanded && (
+																<div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 8, flexDirection: 'column' }}>
+																	<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>ঠিকানা:</strong> {person.address}</span>
+																	<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>ফোন:</strong> <a href={`tel:${person.phone}`}>{person.phone}</a></span>
+																	<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
+																		<strong>টার্গেটের তারিখ:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+																	</span>
+																	<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
+																		<strong>বই অধ্যয়ন:</strong>
+																		{person.books.length > 0 ? (
+																			<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
+																				{person.books.map((book, bidx) => (
+																					<li key={bidx}>{book}</li>
+																				))}
+																			</ol>
+																		) : (
+																			<span style={{ color: '#aaa' }}>None</span>
+																		)}
 																	</div>
-																)}
-															</li>
-														);
-													})}
-												</ul>
-											</div>
-										)
-									})}
-								</div>
-							</>}
-						</div>
-					)}
-					{activeTab === 'Report' && (
-						<div className={tabStyles.card}>
-							<h2 className={styles.targetTitle}>Report</h2>
-							<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
-								<span style={{ opacity: 0.7 }}>Report tab content goes here.</span>
+																</div>
+															)}
+														</li>
+													);
+												})}
+											</ul>
+										</div>
+									)
+								})}
 							</div>
+						</>}
+					</div>
+				)}
+				{activeTab === 'Report' && (
+					<div className={tabStyles.card}>
+						<h2 className={styles.targetTitle}>Report</h2>
+						<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
+							<span style={{ opacity: 0.7 }}>Report tab content goes here.</span>
 						</div>
-					)}
-					{activeTab === 'Books' && (
-						<div className={tabStyles.card}>
-							<h2 className={styles.targetTitle}>Books</h2>
-							<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
-								<span style={{ opacity: 0.7 }}>Books tab content goes here.</span>
-							</div>
+					</div>
+				)}
+				{activeTab === 'Books' && (
+					<div className={tabStyles.card}>
+						<h2 className={styles.targetTitle}>Books</h2>
+						<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
+							<span style={{ opacity: 0.7 }}>Books tab content goes here.</span>
 						</div>
-					)}
-					{activeTab === 'Activity' && (
-						<div className={tabStyles.card}>
-							<h2 className={styles.targetTitle}>Activity</h2>
-							<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
-								<span style={{ opacity: 0.7 }}>Activity tab content goes here.</span>
-							</div>
+					</div>
+				)}
+				{activeTab === 'Activity' && (
+					<div className={tabStyles.card}>
+						<h2 className={styles.targetTitle}>Activity</h2>
+						<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
+							<span style={{ opacity: 0.7 }}>Activity tab content goes here.</span>
 						</div>
-					)}
-				</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);

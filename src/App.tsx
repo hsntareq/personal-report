@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import './App.css';
 import Books from './components/Books';
 import Dashboard from './components/Dashboard';
 import Login from './components/Login';
@@ -8,6 +7,7 @@ import Navigation from './components/Navigation';
 import Register from './components/Register';
 import { AuthProvider } from './contexts/AuthContext.tsx';
 import { useAuth } from './hooks/useAuth';
+import './scss/base/App.scss';
 
 const AuthWrapper: React.FC = () => {
 	const { currentUser } = useAuth();

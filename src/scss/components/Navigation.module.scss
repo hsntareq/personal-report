@@ -1,0 +1,62 @@
+// Import variables
+@use '../base/variables' as *;
+
+.nav {
+  background: $white;
+  border-bottom: 1px solid $border-color;
+  box-shadow: 0 1px 3px $shadow-nav;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-normal;
+
+  &:hover {
+    color: $primary-dark;
+  }
+}
+
+.navLinks {
+  display: flex;
+  gap: $spacing-lg;
+  align-items: center;
+}
+
+.navLink {
+  color: $text-light;
+  text-decoration: none;
+  font-weight: 500;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: $gray-100;
+    color: $primary-color;
+  }
+
+  &.active {
+    background: $primary-color;
+    color: $white;
+
+    &:hover {
+      background: $primary-dark;
+    }
+  }
+}

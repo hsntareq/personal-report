@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { addBook, deleteBook, getBooks, updateBook, type Book } from '../firebase/books';
 import { useAuth } from '../hooks/useAuth';
-import tabStyles from './ProfileTabs.module.css';
-import styles from './ProfileTargets.module.css';
+import tabStyles from '../scss/components/ProfileTabs.module.scss';
+import styles from '../scss/components/ProfileTargets.module.scss';
 import AddBookModal from './book/AddBookModal';
 
 const Books: React.FC = () => {

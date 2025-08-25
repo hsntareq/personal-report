@@ -1,0 +1,70 @@
+@use "sass:map";
+
+// Breakpoint variables
+$breakpoints: (
+  xs: 480px,
+  sm: 768px,
+  md: 992px,
+  lg: 1200px,
+  xl: 1400px
+);
+
+// Media query mixin for above breakpoint (min-width)
+@mixin above($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media (min-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+// Media query mixin for below breakpoint (max-width)
+@mixin below($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media (max-width: #{map.get($breakpoints, $breakpoint) - 1px}) {
+      @content;
+    }
+  } @else {
+    @media (max-width: #{$breakpoint - 1px}) {
+      @content;
+    }
+  }
+}
+
+// Between two breakpoints
+@mixin between($min, $max) {
+  @if map.has-key($breakpoints, $min) and map.has-key($breakpoints, $max) {
+    @media (min-width: map.get($breakpoints, $min)) and (max-width: #{map.get($breakpoints, $max) - 1px}) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $min) and (max-width: #{$max - 1px}) {
+      @content;
+    }
+  }
+}
+
+// Usage examples:
+// .container {
+//   width: 100%;
+//
+//   @include above(sm) {
+//     width: 750px;
+//   }
+//
+//   @include above(md) {
+//     width: 970px;
+//   }
+//
+//   @include below(sm) {
+//     padding: 10px;
+//   }
+//
+//   @include between(sm, md) {
+//     margin: 20px auto;
+//   }
+// }

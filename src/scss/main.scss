@@ -1,0 +1,11 @@
+// Main SCSS entry point
+// Import base styles and mixins
+@use './base/mixins' as *;
+@use './base/index';
+@use './base/App';
+
+// Import component styles
+@use './components/Navigation.module';
+@use './components/Modal.module';
+@use './components/ProfileTabs.module';
+@use './components/ProfileTargets.module';
