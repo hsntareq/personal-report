@@ -1,0 +1,61 @@
+// Import variables
+@use '../base/variables' as *;
+
+// Modal Block
+.modal {
+  // Modal overlay element
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $shadow-modal-overlay;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Modal content element
+  &__content {
+    background: $white;
+    border-radius: 10px;
+    box-shadow: 0 4px 32px $shadow-modal-content;
+    padding: $spacing-xl 28px $spacing-lg 28px;
+    min-width: 340px;
+    max-width: 95vw;
+    min-height: 100px;
+    position: relative;
+    animation: modalIn $transition-normal;
+  }
+
+  // Modal close button element
+  &__close-btn {
+    position: absolute;
+    top: 12px;
+    right: $spacing-md;
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: $text-lighter;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $danger-color;
+    }
+  }
+}
+
+@keyframes modalIn {
+  from {
+    transform: translateY(40px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}

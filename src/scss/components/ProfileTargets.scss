@@ -1,0 +1,373 @@
+// Import variables
+@use '../base/variables' as *;
+
+// Profile Targets Block
+.profile-targets {
+
+	// Base elements for target person details
+	&__target-person-details,
+	&__target-person-date,
+	&__target-person-books {
+		font-size: $font-size-base;
+		font-weight: 400;
+	}
+
+	// Person name container element
+	&__person-name-container {
+		display: flex;
+		align-items: center;
+		gap: $spacing-sm;
+	}
+
+	// Person name element
+	&__person-name {
+		font-weight: 600;
+		font-size: $font-size-base;
+	}
+
+	// Group title element
+	&__group-title {
+		font-size: 1.15rem;
+		font-weight: 700;
+	}
+
+	// Target title element
+	&__target-title {
+		font-size: 1.25rem;
+		font-weight: 800;
+		letter-spacing: 0.01em;
+		margin: 0;
+	}
+
+	// Card heading styles
+	&__card h2,
+	&__target-title {
+		font-size: 1.25rem;
+		font-weight: 800;
+		margin-bottom: $spacing-md;
+	}
+
+	// Group card element
+	&__group-card {
+		background: $background-blue;
+		border-radius: $border-radius-xl;
+		border-left: $spacing-sm solid var(--group-border, $primary-color);
+		box-shadow: 0 2px 8px $shadow-dark;
+		margin-bottom: $spacing-lg;
+		padding: $spacing-lg $spacing-lg 10px $spacing-lg;
+		border: 1px solid $border-color;
+		transition: box-shadow 0.18s, border 0.18s;
+
+		// Member modifier
+		&--member {
+			--group-border: #{$primary-color};
+		}
+
+		// Activist modifier
+		&--activist {
+			--group-border: #{$success-color};
+		}
+
+		// Supporter modifier
+		&--supporter {
+			--group-border: #{$warning-color};
+		}
+	}
+
+	// Group header element
+	&__group-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: $spacing-sm;
+	}
+
+	// Group title element (redefined with proper specificity)
+	&__group-title {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: $text-dark;
+		display: flex;
+		align-items: center;
+		gap: $spacing-sm;
+	}
+}
+
+// Avatar Circle Block
+.avatar-circle {
+	width: $spacing-xl;
+	height: $spacing-xl;
+	border-radius: $border-radius-circle;
+	background: linear-gradient(135deg, $primary-color 60%, $primary-dark 100%);
+	color: $white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 700;
+	font-size: 1.1rem;
+	margin-right: $spacing-sm;
+	box-shadow: 0 1px 4px $shadow-avatar;
+
+	// Avatar circle modifiers
+	&--activist {
+		background: linear-gradient(135deg, $success-color 60%, $success-dark 100%);
+	}
+
+	&--supporter {
+		background: linear-gradient(135deg, $warning-color 60%, $warning-dark 100%);
+		color: $text-dark;
+	}
+}
+
+// Person Row Block
+.person-row {
+	padding: $spacing-md;
+	text-align: left;
+	position: relative;
+	background: transparent;
+	border-radius: 0;
+	margin-bottom: 0;
+	box-shadow: none;
+	transition: background 0.18s, box-shadow 0.18s;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid transparent;
+
+	&:not(:last-child) {
+		border-bottom: 1px solid $border-light;
+	}
+
+	// Person row modifier for expanded state
+	&--expanded {
+		background: $background-expanded;
+		border-radius: $border-radius-lg;
+		margin-bottom: $spacing-sm;
+		border: 1px solid $primary-lighter;
+	}
+
+	// Person row main element
+	&__main {
+		text-align: left;
+		display: flex;
+		align-items: center;
+		position: relative;
+		font-weight: 500;
+		min-width: 100%;
+	}
+
+	// Person row content element
+	// Person row content element
+	&__content {
+		font-size: $font-size-base;
+		display: flex;
+		align-items: center;
+		width: 100%;
+		justify-content: space-between;
+		cursor: pointer;
+	}
+
+	// Person row accordion arrow element
+	&__accordion-arrow {
+		font-size: $font-size-lg;
+		margin-right: $spacing-sm;
+		color: $text-lighter;
+		user-select: none;
+	}
+}
+
+// Action Button Block
+.action-button {
+	background: $gray-500;
+	color: $white;
+	border: 1px solid $border-light;
+	border-radius: $border-radius-md;
+	font-size: 1rem;
+	font-weight: 600;
+	padding: 0.5em 1em;
+	box-shadow: 0 2px 8px $shadow-button;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	&:disabled {
+		background: $border-color;
+		color: $text-disabled;
+		cursor: not-allowed;
+	}
+
+	// Action button modifiers
+	&--dark {
+		background: $text-medium;
+		color: $white;
+		border: 1px solid $text-light;
+	}
+
+	&--square {
+		width: 40px;
+		height: 36px;
+		padding: 0;
+	}
+
+	&--alt {
+		background: linear-gradient(90deg, $warning-color 60%, $warning-dark 100%);
+		color: $text-dark;
+	}
+
+	&--danger {
+		color: $white;
+	}
+}
+
+// Tabs
+// Tabs Block
+.tabs {
+	display: flex;
+	gap: $spacing-md;
+	margin-bottom: $spacing-lg;
+
+	// Tab button element
+	&__button {
+		padding: $spacing-sm 20px;
+		border: none;
+		border-bottom: 2px solid $border-medium;
+		background: none;
+		font-weight: normal;
+		color: $text-medium;
+		cursor: pointer;
+		outline: none;
+		font-size: $font-size-base;
+		transition: border-bottom $transition-normal, color $transition-normal;
+
+		// Tab button modifier for active state
+		&--active {
+			border-bottom: 3px solid $primary-color;
+			color: $primary-color;
+			font-weight: bold;
+		}
+	}
+
+	// Tab content element
+	&__content {
+		min-height: 350px;
+	}
+}
+
+// Cards
+.card {
+	margin: 0;
+	background: $white;
+	border-radius: $border-radius-lg;
+	box-shadow: 0 2px 8px $shadow-light;
+	padding: $spacing-xl;
+	min-height: 300px;
+}
+
+// Target Card Block
+.target-card {
+	background: $white;
+	border-radius: $border-radius-lg;
+	box-shadow: 0 2px 8px $shadow-light;
+	padding: 20px;
+	margin-bottom: $spacing-lg;
+}
+
+// Add Person Form Block
+.add-person-form {
+	background: $gray-100;
+	border-radius: $border-radius-lg;
+	padding: 20px;
+	margin-bottom: $spacing-xl;
+	box-shadow: 0 2px 8px $shadow-light;
+
+	// Form input row element
+	&__input-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-bottom: 12px;
+	}
+
+	// Form input and select elements
+	&__input,
+	&__select {
+		flex: 1;
+		min-width: 120px;
+		padding: $spacing-sm;
+		border-radius: $border-radius-sm;
+		border: 1px solid $border-medium;
+	}
+
+	// Books input element
+	&__books-input {
+		display: flex;
+		align-items: center;
+		gap: $spacing-sm;
+		margin-bottom: $spacing-sm;
+	}
+
+	// Book item element
+	&__book-item {
+		background: $gray-200;
+		border-radius: $border-radius-sm;
+		padding: 2px $spacing-sm;
+		margin-right: 6px;
+		font-size: 13px;
+	}
+
+	// Save button element
+	&__save-button {
+		padding: 10px $spacing-lg;
+		background: $success-color;
+		color: $white;
+		border: none;
+		border-radius: $border-radius-sm;
+		font-weight: 600;
+		font-size: $font-size-base;
+		margin: 0;
+		cursor: pointer;
+		opacity: 1;
+		transition: opacity $transition-normal;
+
+		&:disabled {
+			opacity: 0.7;
+			cursor: not-allowed;
+		}
+	}
+}
+
+// Target List Block
+.target-list {
+	display: flex;
+	flex-direction: column;
+	gap: $spacing-lg;
+
+	// Target group header element
+	&__group-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: rgba(0, 0, 0, 0.2);
+		padding: 10px;
+	}
+
+	// Target group title element
+	&__group-title {
+		color: $primary-color;
+		margin: 0;
+	}
+
+	// Target person element
+	&__person {
+		border-bottom: 1px solid $border-light;
+		padding: 10px 0;
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	// Target person name element
+	&__person-name {
+		font-weight: 600;
+	}
+}

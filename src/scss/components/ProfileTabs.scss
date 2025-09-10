@@ -1,0 +1,141 @@
+// Import variables
+@use '../base/mixins' as *;
+@use '../base/variables' as *;
+
+// Profile Tabs Block
+.profile-tabs {
+  // Target header element
+  &__target-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-lg;
+  }
+
+  // Target title element
+  &__target-title {
+    font-size: 1.5rem;
+    color: $text-dark;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin: 0;
+  }
+
+  // Add button element
+  &__add-button {
+    background: linear-gradient(90deg, $primary-color 60%, $primary-dark 100%);
+    color: $white;
+    border: none;
+    border-radius: $border-radius-md;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: $spacing-sm $spacing-lg;
+    box-shadow: 0 2px 8px $shadow-dark;
+    cursor: pointer;
+    transition: background $transition-normal, box-shadow $transition-normal;
+
+    &:hover {
+      background: linear-gradient(90deg, $primary-dark 60%, $primary-color 100%);
+      box-shadow: 0 4px 16px rgba(0, 123, 255, 0.10);
+    }
+  }
+
+  // Person card element
+  &__person-card {
+    background: $background-gray;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 1px 4px $shadow-medium;
+    margin-bottom: $spacing-lg;
+    padding: $spacing-lg $spacing-lg 10px $spacing-lg;
+    border: 1px solid $border-color;
+  }
+
+  // Person card header element
+  &__person-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-sm;
+  }
+
+  // Person name element
+  &__person-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $text-dark;
+  }
+
+  // Tab content element
+  &__tab-content {
+    padding: $spacing-lg 0;
+  }
+
+  // Tabs container element
+  &__tabs {
+    display: flex;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+  }
+
+  // Tab button element
+  &__tab-button {
+    background: $gray-100;
+    border: 1px solid $border-dark;
+    border-radius: $border-radius-md $border-radius-md 0 0;
+    padding: $spacing-sm $spacing-lg;
+    font-size: $font-size-base;
+    color: $text-light;
+    cursor: pointer;
+    transition: background $transition-normal, color $transition-normal;
+
+    // Active modifier for tab button
+    &--active {
+      background: $white;
+      color: $primary-color;
+      border-bottom: 2px solid $primary-color;
+      font-weight: 600;
+    }
+  }
+
+  // Card element
+  &__card {
+    background: $white;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 2px 8px $shadow-medium;
+    margin-bottom: $spacing-lg;
+    padding: 0;
+
+    @include above(sm) {
+      padding: $spacing-xl $spacing-lg;
+    }
+  }
+
+  // Tab section title element
+  &__tab-section-title {
+    color: $primary-color;
+    font-size: 22px;
+    margin-bottom: $spacing-lg;
+    font-weight: 600;
+  }
+
+  // Tab section text element
+  &__tab-section-text {
+    color: $text-medium;
+    font-size: $font-size-base;
+    margin-bottom: $spacing-md;
+  }
+
+  // Tab section list element
+  &__tab-section-list {
+    color: $text-medium;
+    font-size: 15px;
+    margin-left: $spacing-lg;
+    margin-bottom: $spacing-md;
+  }
+
+  // Tab section highlight modifier
+  &__tab-section-highlight {
+    color: $danger-color;
+    font-weight: 500;
+  }
+}

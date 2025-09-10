@@ -24,8 +24,8 @@ type TabType = typeof TABS[number];
 import React, { useEffect, useState } from 'react';
 import { addTargetPerson, deleteTargetPerson, getTargetPersons, updateTargetPerson } from '../firebase/targets';
 import { useAuth } from '../hooks/useAuth';
-import tabStyles from '../scss/components/ProfileTabs.module.scss';
-import styles from '../scss/components/ProfileTargets.module.scss';
+import '../scss/components/ProfileTabs.scss';
+import '../scss/components/ProfileTargets.scss';
 import AddTargetModal from './target/AddTargetModal';
 // Firestore document type for a person
 type FirestoreTargetPerson = {
@@ -275,23 +275,23 @@ const ProfileTargets: React.FC = () => {
 
 	return (
 		<div className="profile-targets">
-			<div className={tabStyles.tabs}>
+			<div className="profile-tabs__tabs">
 				{TABS.map(tab => (
 					<button
 						key={tab}
 						onClick={() => setActiveTab(tab)}
-						className={activeTab === tab ? `${tabStyles.tabButton} ${tabStyles.tabButtonActive}` : tabStyles.tabButton}
+						className={activeTab === tab ? "profile-tabs__tab-button profile-tabs__tab-button--active" : "profile-tabs__tab-button"}
 					>
 						{tab}
 					</button>
 				))}
 			</div>
-			<div className={tabStyles.tabContent}>
+			<div className="profile-tabs__tab-content">
 				{activeTab === 'Target' && (
-					<div className={tabStyles.card}>
-						<div className={tabStyles.targetHeader}>
-							<h2 className={tabStyles.targetTitle}>🎯 টার্গেট নির্ধারন</h2>
-							<button className={`${styles.actionButton} ${styles.dark}`} type="button" onClick={openAddModal}>+ নতুন টার্গেট</button>
+					<div className="profile-tabs__card">
+						<div className="profile-tabs__target-header">
+							<h2 className="profile-tabs__target-title">🎯 টার্গেট নির্ধারন</h2>
+							<button className="action-button action-button--dark" type="button" onClick={openAddModal}>+ নতুন টার্গেট</button>
 						</div>
 						{loading ? <div style={{ textAlign: 'center', padding: 32 }}>লোড হচ্ছে...</div> : <>
 							{/* Select Group field moved into modal below */}
@@ -299,7 +299,7 @@ const ProfileTargets: React.FC = () => {
 								<AddTargetModal
 									show={showModal}
 									onClose={() => setShowModal(false)}
-									onSubmit={e => {
+									onSubmit={(e: React.FormEvent) => {
 										e.preventDefault();
 										handleAddPerson();
 									}}
@@ -316,16 +316,16 @@ const ProfileTargets: React.FC = () => {
 									editPersonId={editPersonId}
 								/>
 							)}
-							<div className={styles.targetList}>
+							<div className="target-list">
 								{groups.map((group) => {
 									return (
 										<div
 											key={group.type} title={group.type}
-											className={`${styles.groupCard} ${styles[group.type]}`}
+											className={`group-card group-card--${group.type}`}
 										>
-											<div className={styles.groupHeader}>
-												<span className={styles.groupTitle}>
-													<span className={`${styles.avatarCircle} ${styles[group.type]}`}>{group.type.charAt(0).toUpperCase()}</span>
+											<div className="group-card__header">
+												<span className="group-card__title">
+													<span className={`group-card__avatar group-card__avatar--${group.type}`}>{group.type.charAt(0).toUpperCase()}</span>
 													{memberBangla(group.type)} টার্গেট
 												</span>
 											</div>
@@ -337,22 +337,22 @@ const ProfileTargets: React.FC = () => {
 													return (
 														<li
 															key={person.id}
-															className={expanded ? `${styles.personRow} ${styles.expanded}` : styles.personRow}
+															className={expanded ? "person-row person-row--expanded" : "person-row"}
 														>
 															<div
-																className={styles.personRowMain}
+																className="person-row__main"
 																onClick={togglePerson}
 															>
-																<div className={styles.personRowContent}>
+																<div className="person-row__content">
 																	<div>
-																		<span className={styles.accordionArrow}>{expanded ? '▼' : '▶'}</span>
-																		<span className={styles.personName}>{person.name}</span>
+																		<span className="person-row__arrow">{expanded ? '▼' : '▶'}</span>
+																		<span className="person-row__name">{person.name}</span>
 																	</div>
-																	<div className={styles.personNameContainer}>
+																	<div className="person-row__actions">
 																		<button
 																			type="button"
 																			aria-label="Edit"
-																			className={`${styles.actionButton} ${styles.square}`}
+																			className="action-button action-button--square"
 																			onClick={e => { e.stopPropagation(); handleEditPerson(group.type, person.id); }}
 																		>
 																			<svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -362,7 +362,7 @@ const ProfileTargets: React.FC = () => {
 																		<button
 																			type="button"
 																			aria-label="Delete"
-																			className={`${styles.actionButton} ${styles.danger} ${styles.square}`}
+																			className="action-button action-button--danger action-button--square"
 																			onClick={e => {
 																				e.stopPropagation();
 																				handleTargetDelete(person.id);
@@ -403,13 +403,13 @@ const ProfileTargets: React.FC = () => {
 																</div>
 															</div>
 															{expanded && (
-																<div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 8, flexDirection: 'column' }}>
-																	<span className={styles.targetPersonDetails} style={{ minWidth: 180, textAlign: 'left' }}><strong>ঠিকানা:</strong> {person.address}</span>
-																	<span className={styles.targetPersonDetails} style={{ minWidth: 130, textAlign: 'left' }}><strong>ফোন:</strong> <a href={`tel:${person.phone}`}>{person.phone}</a></span>
-																	<span className={styles.targetPersonDate} style={{ minWidth: 120, textAlign: 'left' }}>
+																<div className="person-row__details">
+																	<span className="person-row__detail" style={{ minWidth: 180, textAlign: 'left' }}><strong>ঠিকানা:</strong> {person.address}</span>
+																	<span className="person-row__detail" style={{ minWidth: 130, textAlign: 'left' }}><strong>ফোন:</strong> <a href={`tel:${person.phone}`}>{person.phone}</a></span>
+																	<span className="person-row__detail" style={{ minWidth: 120, textAlign: 'left' }}>
 																		<strong>টার্গেটের তারিখ:</strong> {person.targetDate ? new Date(person.targetDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
 																	</span>
-																	<div className={styles.targetPersonBooks} style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
+																	<div className="person-row__books" style={{ flex: 1, textAlign: 'left', alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
 																		<strong>বই অধ্যয়ন:</strong>
 																		{person.books.length > 0 ? (
 																			<ol style={{ margin: 0, paddingLeft: 18, display: 'inline-block' }}>
@@ -435,24 +435,24 @@ const ProfileTargets: React.FC = () => {
 					</div>
 				)}
 				{activeTab === 'Report' && (
-					<div className={tabStyles.card}>
-						<h2 className={styles.targetTitle}>Report</h2>
+					<div className="profile-tabs__card">
+						<h2 className="profile-tabs__target-title">Report</h2>
 						<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
 							<span style={{ opacity: 0.7 }}>Report tab content goes here.</span>
 						</div>
 					</div>
 				)}
 				{activeTab === 'Books' && (
-					<div className={tabStyles.card}>
-						<h2 className={styles.targetTitle}>Books</h2>
+					<div className="profile-tabs__card">
+						<h2 className="profile-tabs__target-title">Books</h2>
 						<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
 							<span style={{ opacity: 0.7 }}>Books tab content goes here.</span>
 						</div>
 					</div>
 				)}
 				{activeTab === 'Activity' && (
-					<div className={tabStyles.card}>
-						<h2 className={styles.targetTitle}>Activity</h2>
+					<div className="profile-tabs__card">
+						<h2 className="profile-tabs__target-title">Activity</h2>
 						<div style={{ color: '#555', fontSize: 16, textAlign: 'center', marginTop: 40 }}>
 							<span style={{ opacity: 0.7 }}>Activity tab content goes here.</span>
 						</div>
